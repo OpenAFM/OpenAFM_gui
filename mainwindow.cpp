@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include "tx_rx_protocol.h"
 #include "def_commands.h"
-#include "scanwindow.h"
 #include "scannerwindow.h"
 #include "scan_setup.h"
 
