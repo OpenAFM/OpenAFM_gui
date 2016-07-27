@@ -13,7 +13,7 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-         tx_rx_protocol.cpp \
+        tx_rx_protocol.cpp \
         surfacegraph.cpp \
         scannerwindow.cpp \
         qcustomplot.cpp \
@@ -23,13 +23,13 @@ HEADERS  += mainwindow.h \
         def_commands.h \
         tx_rx_protocol.h \
         surfacegraph.h \
-    scannerwindow.h \
-    qcustomplot.h \
+        scannerwindow.h \
+        qcustomplot.h \
 
 
 
 
 FORMS    += mainwindow.ui \
-    scannerwindow.ui
+            scannerwindow.ui
 
 CONFIG += static
