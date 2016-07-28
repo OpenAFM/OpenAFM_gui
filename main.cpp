@@ -4,6 +4,7 @@
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::addLibraryPath("@executable_path/../");
     QApplication a(argc, argv);
     MainWindow w;
     a.setApplicationName("Arduguino 0.1");

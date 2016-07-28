@@ -27,9 +27,10 @@ HEADERS  += mainwindow.h \
         qcustomplot.h \
 
 
+LIBS += -framework QtCore
 
 
 FORMS    += mainwindow.ui \
             scannerwindow.ui
 
-CONFIG += static
+

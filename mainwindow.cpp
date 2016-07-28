@@ -9,6 +9,7 @@
 
 #include <QMessageBox>
 #include <QDebug>
+#include <QLibraryInfo>
 
 #include <QtSerialPort/QSerialPort>
 #include <QSerialPortInfo>
@@ -19,6 +20,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    qDebug()<<"QLibraryInfo::location(QLibraryInfo::PluginsPath)";
+
+    qDebug()<<QLibraryInfo::location(QLibraryInfo::PluginsPath);
+    qDebug()<<QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+    qDebug()<<QLibraryInfo::location(QLibraryInfo::PrefixPath);
+    qDebug()<<QLibraryInfo::location(QLibraryInfo::ImportsPath);
+
+
+
     ui->setupUi(this);
     ui->statusBar->showMessage("Qt to Arduino phone  example", 3000);
     serial = new QSerialPort(this);
@@ -56,14 +66,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-    QObject::connect(ui->pushButton_echo, SIGNAL(clicked()),
-                     this, SLOT(sendEcho()) );
 
-    QObject::connect(ui->pushButton_LED, SIGNAL(clicked()),
-                     this, SLOT(toggleLED()) );
 
     QObject::connect(this, SIGNAL(plotDataReceived(QByteArray)), this, SLOT(realtimeDataSlot(QByteArray)));
 
+    ui->pushButton->setEnabled(false);
+    ui->calibration_PB->setEnabled(false);
 
     setupStreaming(ui->customPlot);
 }
@@ -104,21 +112,6 @@ void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
         qDebug()<<"DONE";
        previousResponse=RESPONSE_DONE;
     }
-}
-
-void MainWindow::command_default(QByteArray buffer, quint16 bytes_received) {
-    ui->statusBar->showMessage(tr("Received a valid packet/command"), 2000);
-}
-
-void MainWindow::command_error() {
-    ui->statusBar->showMessage(tr("Error in  packet/command"), 2000);
-}
-
-
-
-void MainWindow::response_echo_data(QByteArray buffer, quint16 bytes_received) {
-    QString bufferText(buffer);
-    ui->statusBar->showMessage(bufferText, 2000);
 }
 
 
@@ -171,6 +164,9 @@ void MainWindow::openSerialPort()
                                        .arg(QSerialPort::OneStop)
                                        .arg(QSerialPort::NoFlowControl));
             ui->pushButton_connect->setText("Disconnect");
+            ui->pushButton->setEnabled(true);
+            ui->calibration_PB->setEnabled(true);
+
             const QSerialPortInfo info= QSerialPortInfo(*serial);
             ui->label_deviceSignature->setText(info.description());
             disconnect( ui->pushButton_connect, SIGNAL(clicked()),0, 0);
@@ -191,6 +187,9 @@ void MainWindow::closeSerialPort()
     QObject::connect(ui->pushButton_connect, SIGNAL(clicked()),
                      this, SLOT(openSerialPort()));
     ui->pushButton_connect->setText("Connect");
+    ui->pushButton->setEnabled(false);
+    ui->calibration_PB->setEnabled(false);
+
     ui->label_deviceSignature->setText(" ");
 }
 
@@ -213,27 +212,16 @@ void MainWindow::displayIncoming(QByteArray data,quint16 no_of_bytes){
 
 void MainWindow::readData()
 {
-
     QByteArray data = serial->readAll();
     data.replace('', "");
     data.replace('\n', "");
     data.replace('\r', "");
     data.simplified();
-   // ui->plainTextEdit_input->appendPlainText(data.data());
-
     int dSize = data.size();
     if (dSize > 0) {
-
         emit dataReceived(data);}
 }
 
-void MainWindow::handleError(QSerialPort::SerialPortError error)
-{
-    if (error == QSerialPort::ResourceError) {
-        QMessageBox::critical(this, tr("Critical Error"), serial->errorString());
-        closeSerialPort();
-    }
-}
 
 void MainWindow::sendData(QByteArray data) {
     quint16 length = data.length();
@@ -258,28 +246,23 @@ void MainWindow::print_hex_value(QByteArray data) {
     ui->plainTextEdit_input_hex->appendPlainText(QString(hex_console));
 }
 
-/* Command sending functions */
-
-void MainWindow::sendEcho() {
-    QByteArray data;
-    data.append((quint8)COMMAND_ECHO_DATA);
-    data.append("ABCD");
-    emit sendDataFrame(data, (quint16) data.length());
+void MainWindow::handleError(QSerialPort::SerialPortError error)
+{
+    if (error == QSerialPort::ResourceError) {
+        QMessageBox::critical(this, tr("Critical Error"), serial->errorString());
+        closeSerialPort();
+    }
 }
 
-void MainWindow::toggleLED() {
-    QByteArray data;
-    data.append((quint8)COMMAND_TOGGLE_LED);
-    emit sendDataFrame(data, 1);
-}
+
+/* Button Slot functions */
+
 
 void MainWindow::on_pushButton_clicked()
 {
      scannerwindow* Scanner= new scannerwindow(this, serial);
      Scanner->setModal(true);
      Scanner->exec();
-
-
 }
 
 void MainWindow::on_pushButton_Send_clicked()
@@ -301,6 +284,8 @@ void MainWindow::on_scan_setup1_textChanged()
 {
 
 }
+
+/*Calibration tab functions*/
 
 void MainWindow::setupStreaming(QCustomPlot *customPlot)
 {
@@ -330,9 +315,6 @@ void MainWindow::setupStreaming(QCustomPlot *customPlot)
   customPlot->axisRect()->setRangeZoom(Qt::Vertical);
 
   customPlot->axisRect()->setupFullAxesBox(true);
-
-
-
 
 }
 

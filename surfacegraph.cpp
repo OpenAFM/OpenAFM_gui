@@ -52,7 +52,6 @@ void SurfaceGraph::sendReady(){
 void SurfaceGraph::fillAFMProxy(QList <QByteArray> data)
 {
 
-        bool lastline=false;
         QTime time;
         float stepX = 1;
 

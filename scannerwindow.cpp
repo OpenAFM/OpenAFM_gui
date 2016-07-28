@@ -260,4 +260,11 @@ scannerwindow::~scannerwindow()
 void scannerwindow::on_pushButton_2_clicked()
 {
     emit scan_starting();
+    close();
+}
+
+void scannerwindow::on_pushButton_clicked()
+{
+    close();
+
 }

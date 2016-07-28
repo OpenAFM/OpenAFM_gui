@@ -28,8 +28,6 @@ public slots:
     void putChar(char data);
     void phone_CommandRouter(QByteArray buffer, quint16 bytes_received);
     void setStatusbarText(const QString& text);
-    void sendEcho();
-    void toggleLED();
     void putData_debug(const QByteArray &data);
 
 
@@ -47,9 +45,6 @@ private:
     QSerialPort *serial;
     QSerialPortInfo *info;
     void getChipSignature();
-    void command_default(QByteArray buffer, quint16 bytes_received);
-    void response_echo_data(QByteArray buffer, quint16 bytes_received);
-    void command_error();
     void setupStreaming(QCustomPlot *customPlot);
 
 private slots:

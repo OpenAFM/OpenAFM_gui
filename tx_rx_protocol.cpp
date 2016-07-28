@@ -41,7 +41,6 @@ void TX_RX_qt::frameDecode(QByteArray buffer, quint16 bytes_to_send)
 {
     char data;
     QByteArray packet;
-
     int i = 0;
     while (i < bytes_to_send)
     {
@@ -49,7 +48,6 @@ void TX_RX_qt::frameDecode(QByteArray buffer, quint16 bytes_to_send)
         packet.append((char)data);
         i++;
     }
-
     emit TX_TransmitByte(packet);
 }
 
