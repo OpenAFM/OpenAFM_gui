@@ -20,15 +20,13 @@ SurfaceGraph::SurfaceGraph(Q3DSurface *surface, QSerialPort *serial, QWidget *ma
 
     AFM_Proxy=new QSurfaceDataProxy();
     AFM_Series = new QSurface3DSeries(AFM_Proxy);
+    AFM_Series->setMeshSmooth(true);
     AFM_Proxy->resetArray(NULL);
 
     m_graph->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);
 
-    data_serial=serial;
-    sampleCountX = 250;
-    sampleCountZ = 250;
-    sampleMin = 0;
-    sampleMax = 8;
+    data_serial=serial;       
+
 }
 
 SurfaceGraph::~SurfaceGraph()
@@ -51,10 +49,7 @@ void SurfaceGraph::sendReady(){
 
 void SurfaceGraph::fillAFMProxy(QList <QByteArray> data)
 {
-
-        QTime time;
         float stepX = 1;
-
         if(!size_set){
             int line_size=data.size()/2;
             sampleCountX=line_size;
@@ -63,11 +58,13 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data)
         }
         if(sampleCountX==data.size()/2){
         QSurfaceDataRow *newRow = new QSurfaceDataRow(sampleCountX);
-        qDebug()<<"Adding Row"<<sampleCountX<<QTime::currentTime();
+        qDebug()<<data;
         int index = 0;
         for (int j = 0; j<sampleCountX; j++) {
             float x = (j * stepX);
-            float y = (data[j].toInt()+data[sampleCountX-1-j].toInt())/2;
+            float y = (data.front().toInt()+data.back().toInt())/2;
+            data.pop_back();
+            data.pop_front();
             float z = AFM_Proxy->rowCount();
             (*newRow)[index].setPosition(QVector3D(x, y, z+1));
             index++;
@@ -80,6 +77,7 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data)
         sendReady();
 }
 
+
 }
 
 
@@ -87,6 +85,7 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data)
 void SurfaceGraph::enableAFMModel(bool enable)
 {
     if (enable) {
+
         AFM_Series->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
         AFM_Series->setFlatShadingEnabled(true);
 
@@ -101,19 +100,6 @@ void SurfaceGraph::enableAFMModel(bool enable)
 
         m_graph->addSeries(AFM_Series);
 
-        // Reset range sliders for Sqrt&Sin
-        m_rangeMinX = sampleMin;
-        m_rangeMinZ = sampleMin;
-        m_stepX = (sampleMax - sampleMin) / float(sampleCountX - 1);
-        m_stepZ = (sampleMax - sampleMin) / float(sampleCountZ - 1);
-        m_axisMinSliderX->setMaximum(sampleCountX - 2);
-        m_axisMinSliderX->setValue(0);
-        m_axisMaxSliderX->setMaximum(sampleCountX - 1);
-        m_axisMaxSliderX->setValue(sampleCountX - 1);
-        m_axisMinSliderZ->setMaximum(sampleCountZ - 2);
-        m_axisMinSliderZ->setValue(0);
-        m_axisMaxSliderZ->setMaximum(sampleCountZ - 1);
-        m_axisMaxSliderZ->setValue(sampleCountZ - 1);
     }
 }
 
@@ -125,76 +111,10 @@ void SurfaceGraph::adjustCameraZ(int angle)
 
 
 
-
 void SurfaceGraph::adjustCameraY(int angle)
 {
     this->m_graph->scene()->activeCamera()->setYRotation(angle/2);
 
-}
-void SurfaceGraph::adjustXMin(int min)
-{
-    float minX = m_stepX * float(min) + m_rangeMinX;
-
-    int max = m_axisMaxSliderX->value();
-    if (min >= max) {
-        max = min + 1;
-        m_axisMaxSliderX->setValue(max);
-    }
-    float maxX = m_stepX * max + m_rangeMinX;
-
-    setAxisXRange(minX, maxX);
-}
-
-void SurfaceGraph::adjustXMax(int max)
-{
-    float maxX = m_stepX * float(max) + m_rangeMinX;
-
-    int min = m_axisMinSliderX->value();
-    if (max <= min) {
-        min = max - 1;
-        m_axisMinSliderX->setValue(min);
-    }
-    float minX = m_stepX * min + m_rangeMinX;
-
-    setAxisXRange(minX, maxX);
-}
-
-void SurfaceGraph::adjustZMin(int min)
-{
-    float minZ = m_stepZ * float(min) + m_rangeMinZ;
-
-    int max = m_axisMaxSliderZ->value();
-    if (min >= max) {
-        max = min + 1;
-        m_axisMaxSliderZ->setValue(max);
-    }
-    float maxZ = m_stepZ * max + m_rangeMinZ;
-
-    setAxisZRange(minZ, maxZ);
-}
-
-void SurfaceGraph::adjustZMax(int max)
-{
-    float maxX = m_stepZ * float(max) + m_rangeMinZ;
-
-    int min = m_axisMinSliderZ->value();
-    if (max <= min) {
-        min = max - 1;
-        m_axisMinSliderZ->setValue(min);
-    }
-    float minX = m_stepZ * min + m_rangeMinZ;
-
-    setAxisZRange(minX, maxX);
-}
-
-void SurfaceGraph::setAxisXRange(float min, float max)
-{
-    //m_graph->axisX()->setRange(min, max);
-}
-
-void SurfaceGraph::setAxisZRange(float min, float max)
-{
-   // m_graph->axisZ()->setRange(min, max);
 }
 
 void SurfaceGraph::changeTheme(int theme)
@@ -225,23 +145,8 @@ void SurfaceGraph::setGreenToRedGradient()
     m_graph->seriesList().at(0)->setBaseGradient(gr);
     m_graph->seriesList().at(0)->setColorStyle(Q3DTheme::ColorStyleRangeGradient);
 }
-void SurfaceGraph::setAxisScaling(int size){
-    sampleMin = 0;
-    sampleMax = size;
+void SurfaceGraph::setAxisScaling(int sizeX){
 
-    m_graph->axisX()->setRange(0,size);
+    m_graph->axisX()->setRange(0,sizeX);
 
-    m_rangeMinX = 0;
-    m_rangeMinZ = 0;
-    m_stepX = (size - sampleMin) / float(sampleCountX - 1);
-    m_stepZ = (size - sampleMin) / float(sampleCountZ - 1);
-    m_axisMinSliderX->setMaximum(size - 1);
-    m_axisMinSliderX->setValue(0);
-    m_axisMaxSliderX->setMaximum(size - 1);
-    m_axisMaxSliderX->setValue(size - 1);
-
-    m_axisMinSliderZ->setMaximum(size - 2);
-    m_axisMinSliderZ->setValue(0);
-    m_axisMaxSliderZ->setMaximum(size - 1);
-    m_axisMaxSliderZ->setValue(size - 1);
 }

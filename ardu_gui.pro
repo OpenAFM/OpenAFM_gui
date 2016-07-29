@@ -34,3 +34,6 @@ FORMS    += mainwindow.ui \
             scannerwindow.ui
 
 
+QMAKE_LFLAGS  += -Wl,-rpath,@executable_path/../Frameworks \
+                 -Wl,-rpath,@executable_path/../PlugIns
+

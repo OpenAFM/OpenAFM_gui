@@ -38,12 +38,6 @@ public:
     void adjustCameraZ(int angle);
     void adjustCameraY(int angle);
 
-
-
-    void setAxisMinSliderX(QSlider *slider) { m_axisMinSliderX = slider; }
-    void setAxisMaxSliderX(QSlider *slider) { m_axisMaxSliderX = slider; }
-    void setAxisMinSliderZ(QSlider *slider) { m_axisMinSliderZ = slider; }
-    void setAxisMaxSliderZ(QSlider *slider) { m_axisMaxSliderZ = slider; }
     void setAxisCameraSliderZ(QSlider *slider) { m_axisCameraSliderZ = slider; }
     void setAxisCameraSliderY(QSlider *slider) { m_axisCameraSliderY = slider; }
 
@@ -74,11 +68,6 @@ private:
     QSlider *m_axisCameraSliderZ;
     QSlider *m_axisCameraSliderY;
 
-
-    QSlider *m_axisMinSliderX;
-    QSlider *m_axisMaxSliderX;
-    QSlider *m_axisMinSliderZ;
-    QSlider *m_axisMaxSliderZ;
     float m_rangeMinX;
     float m_rangeMinZ;
     float m_stepX;
@@ -94,6 +83,7 @@ private:
 
 signals:
     void sendSerial(QByteArray data);
+    void scanFinished();
 
 };
 

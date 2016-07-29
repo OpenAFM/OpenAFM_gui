@@ -67,6 +67,7 @@ private slots:
     void realtimeDataSlot(QByteArray);
 
     void on_calibration_PB_toggled(bool checked);
+    void on_setup_pushButton_clicked();
 };
 
 #endif // MAINWINDOW_H

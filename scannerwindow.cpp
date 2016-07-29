@@ -1,6 +1,5 @@
 #include "scannerwindow.h"
 #include "ui_scannerwindow.h"
-#include "surfacegraph.h"
 #include "tx_rx_protocol.h"
 #include "mainwindow.h"
 
@@ -27,9 +26,10 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
     ui(new Ui::scannerwindow)
 {
     ui->setupUi(this);
-    Q3DSurface *graph = new Q3DSurface();
-    QWidget *container = QWidget::createWindowContainer(graph);
-    //! [0]
+    graph = new Q3DSurface();
+    container = QWidget::createWindowContainer(graph);
+    container->setAttribute(Qt::WA_AcceptTouchEvents);
+    container->setParent(this);
 
     if (!graph->hasContext()) {
         QMessageBox msgBox;
@@ -43,14 +43,12 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
     container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     container->setFocusPolicy(Qt::StrongFocus);
 
-    //! [1]
     QWidget *widget = new QWidget;
     QHBoxLayout *hLayout = new QHBoxLayout(widget);
     QVBoxLayout *vLayout = new QVBoxLayout();
     hLayout->addWidget(container, 1);
     hLayout->addLayout(vLayout);
     vLayout->setAlignment(Qt::AlignTop);
-    //! [1]
 
     widget->setWindowTitle(QStringLiteral("Surface example"));
 
@@ -104,22 +102,7 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
     axisCameraSliderY->setEnabled(true);
 
 
-    QSlider *axisMinSliderX = new QSlider(Qt::Horizontal, widget);
-    axisMinSliderX->setMinimum(0);
-    axisMinSliderX->setTickInterval(1);
-    axisMinSliderX->setEnabled(true);
-    QSlider *axisMaxSliderX = new QSlider(Qt::Horizontal, widget);
-    axisMaxSliderX->setMinimum(1);
-    axisMaxSliderX->setTickInterval(1);
-    axisMaxSliderX->setEnabled(true);
-    QSlider *axisMinSliderZ = new QSlider(Qt::Horizontal, widget);
-    axisMinSliderZ->setMinimum(0);
-    axisMinSliderZ->setTickInterval(1);
-    axisMinSliderZ->setEnabled(true);
-    QSlider *axisMaxSliderZ = new QSlider(Qt::Horizontal, widget);
-    axisMaxSliderZ->setMinimum(1);
-    axisMaxSliderZ->setTickInterval(1);
-    axisMaxSliderZ->setEnabled(true);
+
 
     QComboBox *themeList = new QComboBox(widget);
     themeList->addItem(QStringLiteral("Qt"));
@@ -165,12 +148,7 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
 
     vLayout->addWidget(modelGroupBox);
     vLayout->addWidget(selectionGroupBox);
-    vLayout->addWidget(new QLabel(QStringLiteral("Column range")));
-    vLayout->addWidget(axisMinSliderX);
-    vLayout->addWidget(axisMaxSliderX);
-    vLayout->addWidget(new QLabel(QStringLiteral("Row range")));
-    vLayout->addWidget(axisMinSliderZ);
-    vLayout->addWidget(axisMaxSliderZ);
+
     vLayout->addWidget(new QLabel(QStringLiteral("Camera Position")));
     vLayout->addWidget(axisCameraSliderZ);
     vLayout->addWidget(axisCameraSliderY);
@@ -205,14 +183,8 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
                      modifier, &SurfaceGraph::toggleModeSliceRow);
     QObject::connect(modeSliceColumnRB,  &QRadioButton::toggled,
                      modifier, &SurfaceGraph::toggleModeSliceColumn);
-    QObject::connect(axisMinSliderX, &QSlider::valueChanged,
-                     modifier, &SurfaceGraph::adjustXMin);
-    QObject::connect(axisMaxSliderX, &QSlider::valueChanged,
-                     modifier, &SurfaceGraph::adjustXMax);
-    QObject::connect(axisMinSliderZ, &QSlider::valueChanged,
-                     modifier, &SurfaceGraph::adjustZMin);
-    QObject::connect(axisMaxSliderZ, &QSlider::valueChanged,
-                     modifier, &SurfaceGraph::adjustZMax);
+
+
     QObject::connect(themeList, SIGNAL(currentIndexChanged(int)),
                      modifier, SLOT(changeTheme(int)));
     QObject::connect(gradientBtoYPB, &QPushButton::pressed,
@@ -224,6 +196,10 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
                      modifier, &SurfaceGraph::adjustCameraZ);
     QObject::connect(axisCameraSliderY, &QSlider::valueChanged,
                      modifier, &SurfaceGraph::adjustCameraY);
+
+    QObject::connect(modifier, SIGNAL(scanFinished(int, int)),
+                     this, SLOT(setAxisSliders()));
+
     QObject::connect(this, SIGNAL(scan_starting()),
                      modifier, SLOT(sendGo()));
     QObject::connect(this, SIGNAL(scan_starting()),
@@ -231,11 +207,6 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
 
 
 
-
-    modifier->setAxisMinSliderX(axisMinSliderX);
-    modifier->setAxisMaxSliderX(axisMaxSliderX);
-    modifier->setAxisMinSliderZ(axisMinSliderZ);
-    modifier->setAxisMaxSliderZ(axisMaxSliderZ);
 
     AFM_Scan_3D_RB->setChecked(true);
     modeItemRB->setChecked(true);
@@ -246,15 +217,17 @@ void scannerwindow::dataHandler(QByteArray data){
 
         data.replace(";","");
         QList <QByteArray> splitData=data.split(',');
-
+        qDebug()<<"last element"<<splitData.back();
         emit plotData(splitData);
 }
-
 
 
 scannerwindow::~scannerwindow()
 {
     delete ui;
+}
+void scannerwindow::setAxisSliders(){
+
 }
 
 void scannerwindow::on_pushButton_2_clicked()
@@ -267,4 +240,9 @@ void scannerwindow::on_pushButton_clicked()
 {
     close();
 
+}
+
+void scannerwindow::closeEvent(QCloseEvent *bar)
+{
+    bar->accept();
 }

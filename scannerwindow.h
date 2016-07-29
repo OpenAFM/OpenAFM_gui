@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QtCore/QtGlobal>
 #include <QMainWindow>
+#include "surfacegraph.h"
 
 
 
@@ -23,7 +24,7 @@ public:
 
 public slots:
     void dataHandler(QByteArray);
-
+    void setAxisSliders();
 
 signals:
     void dataSent(QByteArray);
@@ -37,6 +38,9 @@ private slots:
     void on_pushButton_clicked();
 
 private:
+    void closeEvent(QCloseEvent*);
+    Q3DSurface *graph;
+    QWidget *container;
     Ui::scannerwindow *ui;
 };
 

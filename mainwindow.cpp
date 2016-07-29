@@ -20,14 +20,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    qDebug()<<"QLibraryInfo::location(QLibraryInfo::PluginsPath)";
-
-    qDebug()<<QLibraryInfo::location(QLibraryInfo::PluginsPath);
-    qDebug()<<QLibraryInfo::location(QLibraryInfo::LibrariesPath);
-    qDebug()<<QLibraryInfo::location(QLibraryInfo::PrefixPath);
-    qDebug()<<QLibraryInfo::location(QLibraryInfo::ImportsPath);
-
-
 
     ui->setupUi(this);
     ui->statusBar->showMessage("Qt to Arduino phone  example", 3000);
@@ -207,7 +199,6 @@ void MainWindow::putData_debug(const QByteArray &data)
 void MainWindow::displayIncoming(QByteArray data,quint16 no_of_bytes){
 
     ui->plainTextEdit_input->appendPlainText(data);
-
 }
 
 void MainWindow::readData()
@@ -326,15 +317,15 @@ void MainWindow::realtimeDataSlot(QByteArray data)
 
     double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
 
-    // add data to lines:
+    // add data to line:
     ui->customPlot->graph(0)->addData(key, value0);
-    // set data of dots:
+    // set data of dot:
     ui->customPlot->graph(1)->clearData();
     ui->customPlot->graph(1)->addData(key, value0);
     // remove data of lines that's outside visible range:
     ui->customPlot->graph(0)->removeDataBefore(key-15);
-    // rescale value (vertical) axis to fit the current data:
 
+    // rescale value (vertical) axis to fit the current data:
 
     ui->customPlot->xAxis->setRange(key+1, 16, Qt::AlignRight);
     ui->customPlot->graph(0)->rescaleValueAxis();
@@ -357,4 +348,20 @@ void MainWindow::on_calibration_PB_toggled(bool checked)
      ui->calibration_PB->setText("Calibrate");
      sendData("DONE;");
     }
+}
+
+void MainWindow::on_setup_pushButton_clicked()
+{
+    QByteArray stepSize= QByteArray::number(ui->step_size_spinBox_3->value());
+    QByteArray lineLength=QByteArray::number (ui->line_length_spinBox->value());
+    QByteArray sampleSize=QByteArray::number (ui->sample_size_spinBox_2->value());
+
+    sendData("SETUP;");
+    sendData(stepSize);
+    sendData(";");
+    sendData(lineLength);
+    sendData(";");
+    sendData(sampleSize);
+    sendData(";");
+
 }
