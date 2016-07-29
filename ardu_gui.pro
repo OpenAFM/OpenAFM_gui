@@ -30,8 +30,7 @@ HEADERS  += mainwindow.h \
 LIBS += -framework QtCore
 
 
-FORMS    += mainwindow.ui \
-            scannerwindow.ui
+FORMS    += mainwindow.ui
 
 
 QMAKE_LFLAGS  += -Wl,-rpath,@executable_path/../Frameworks \

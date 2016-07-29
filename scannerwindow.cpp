@@ -1,7 +1,8 @@
 #include "scannerwindow.h"
 #include "ui_scannerwindow.h"
 #include "tx_rx_protocol.h"
-#include "mainwindow.h"
+#include "surfacegraph.h"
+
 
 
 
@@ -21,15 +22,15 @@
 #include <QObject>
 #include <QDebug>
 
-scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
-    QDialog(parent),
-    ui(new Ui::scannerwindow)
+scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
+    QObject(parent)
 {
-    ui->setupUi(this);
-    graph = new Q3DSurface();
-    container = QWidget::createWindowContainer(graph);
+
+    QWidget* widget = new QWidget();
+    widget->setAttribute(Qt::WA_DeleteOnClose);
+    Q3DSurface *graph = new Q3DSurface();
+    QWidget* container = QWidget::createWindowContainer(graph, widget);
     container->setAttribute(Qt::WA_AcceptTouchEvents);
-    container->setParent(this);
 
     if (!graph->hasContext()) {
         QMessageBox msgBox;
@@ -43,19 +44,21 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
     container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     container->setFocusPolicy(Qt::StrongFocus);
 
-    QWidget *widget = new QWidget;
+
     QHBoxLayout *hLayout = new QHBoxLayout(widget);
     QVBoxLayout *vLayout = new QVBoxLayout();
     hLayout->addWidget(container, 1);
     hLayout->addLayout(vLayout);
     vLayout->setAlignment(Qt::AlignTop);
 
-    widget->setWindowTitle(QStringLiteral("Surface example"));
+    widget->setWindowTitle(QStringLiteral("AFM Scan"));
 
     QGroupBox *modelGroupBox = new QGroupBox(QStringLiteral("Model"));
 
+
+
     QPushButton *AFM_Scan_3D_RB = new QPushButton(widget);
-    AFM_Scan_3D_RB->setText(QStringLiteral("AFM SCAN"));
+    AFM_Scan_3D_RB->setText(QStringLiteral("Start Scan"));
     AFM_Scan_3D_RB->setCheckable(true);
     AFM_Scan_3D_RB->setChecked(false);
 
@@ -158,23 +161,26 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
 
     widget->show();
 
-    SurfaceGraph *modifier = new SurfaceGraph(graph, serial, parent);
+    SurfaceGraph *modifier= new SurfaceGraph(graph, serial, widget);
 
 
-
-    QObject::connect(this, SIGNAL(dataSent(QByteArray)),
-                     parent, SLOT(putData_debug(QByteArray)));
 
     QObject::connect(parent, SIGNAL(plotDataReceived(QByteArray)),
-                     this, SLOT(dataHandler(QByteArray)));
+                     modifier, SLOT(dataHandler(QByteArray)));
 
-    QObject::connect(this, SIGNAL(plotData(QList<QByteArray>)),
-                     modifier, SLOT(fillAFMProxy(QList<QByteArray>)));
+    QObject::connect(widget,SIGNAL(destroyed()),modifier, SLOT(sendDone()));
 
+    QObject::connect(widget,SIGNAL(destroyed()),this, SLOT(close()));
 
+    QObject::connect(AFM_Scan_3D_RB, SIGNAL (clicked()),
+                     modifier, SLOT(enableAFMModel()));
 
-    QObject::connect(AFM_Scan_3D_RB, &QRadioButton::toggled,
-                     modifier, &SurfaceGraph::enableAFMModel);
+    QObject::connect(AFM_Scan_3D_RB, SIGNAL (clicked()),
+                     modifier, SLOT (sendGo()));
+
+    QObject::connect(AFM_Scan_3D_RB, SIGNAL (clicked()),
+                     modifier, SLOT(sendReady()));
+
     QObject::connect(modeNoneRB, &QRadioButton::toggled,
                      modifier, &SurfaceGraph::toggleModeNone);
     QObject::connect(modeItemRB,  &QRadioButton::toggled,
@@ -197,13 +203,8 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
     QObject::connect(axisCameraSliderY, &QSlider::valueChanged,
                      modifier, &SurfaceGraph::adjustCameraY);
 
-    QObject::connect(modifier, SIGNAL(scanFinished(int, int)),
-                     this, SLOT(setAxisSliders()));
 
-    QObject::connect(this, SIGNAL(scan_starting()),
-                     modifier, SLOT(sendGo()));
-    QObject::connect(this, SIGNAL(scan_starting()),
-                     modifier, SLOT(sendReady()));
+
 
 
 
@@ -213,36 +214,18 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial) :
     themeList->setCurrentIndex(2);
 }
 
-void scannerwindow::dataHandler(QByteArray data){
 
-        data.replace(";","");
-        QList <QByteArray> splitData=data.split(',');
-        qDebug()<<"last element"<<splitData.back();
-        emit plotData(splitData);
-}
 
 
 scannerwindow::~scannerwindow()
 {
-    delete ui;
-}
-void scannerwindow::setAxisSliders(){
-
+    qDebug()<<"closed";
 }
 
-void scannerwindow::on_pushButton_2_clicked()
-{
-    emit scan_starting();
-    close();
+void scannerwindow::close(){
+    delete this;
 }
 
-void scannerwindow::on_pushButton_clicked()
-{
-    close();
 
-}
 
-void scannerwindow::closeEvent(QCloseEvent *bar)
-{
-    bar->accept();
-}
+

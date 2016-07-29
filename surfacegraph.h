@@ -2,7 +2,6 @@
 #ifndef SURFACEGRAPH_H
 #define SURFACEGRAPH_H
 
-#include "mainwindow.h"
 
 #include <QtDataVisualization/Q3DSurface>
 #include <QtDataVisualization/QSurfaceDataProxy>
@@ -23,7 +22,6 @@ public:
 
 
     bool size_set=false;
-    void enableAFMModel(bool enable);
 
     void toggleModeNone() { m_graph->setSelectionMode(QAbstract3DGraph::SelectionNone); }
     void toggleModeItem() { m_graph->setSelectionMode(QAbstract3DGraph::SelectionItem); }
@@ -53,11 +51,18 @@ public:
     float sampleMax = 8.0f;
 
 
+
+
 public Q_SLOTS:
+
+    void enableAFMModel();
     void sendReady();
     void sendGo();
+    void sendDone();
     void changeTheme(int theme);
     void fillAFMProxy(QList<QByteArray> data);
+    void dataHandler(QByteArray);
+
 
 private:
     Q3DSurface *m_graph;
@@ -84,6 +89,8 @@ private:
 signals:
     void sendSerial(QByteArray data);
     void scanFinished();
+    void plotData(QList<QByteArray>);
+
 
 };
 

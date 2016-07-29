@@ -19,6 +19,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     QByteArray bytesReceived;
+    QByteArray previous_response;
 
 
 
@@ -35,6 +36,9 @@ signals:
     void sendDataFrame(QByteArray buffer, quint16 size);
     void dataReceived(QByteArray data);
     void plotDataReceived(QByteArray data);
+    void dataSent(QByteArray);
+    void plotData(QList<QByteArray>);
+    void scan_starting();
 
 private:
     QTimer dataTimer;
@@ -61,7 +65,6 @@ private slots:
     void print_hex_value(QByteArray data);
     void on_pushButton_clicked();
     void on_pushButton_Send_clicked();
-    void on_scan_setup1_textChanged();
     void on_pushButton_2_pressed();
     void on_lineEdit_Data_returnPressed();
     void realtimeDataSlot(QByteArray);

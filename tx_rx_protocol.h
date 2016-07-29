@@ -51,7 +51,6 @@ private:
     bool streaming=false;
     bool data_incoming=false;
 
-    quint16 GO=0X34;
 
     const QByteArray FRAME_BOUNDARY=QByteArray(';',1);
 

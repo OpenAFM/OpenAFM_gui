@@ -1,5 +1,5 @@
 #include "surfacegraph.h"
-
+#include "def_commands.h"
 #include <QtDataVisualization/QValue3DAxis>
 #include <QtDataVisualization/Q3DTheme>
 #include <QtGui/QImage>
@@ -9,10 +9,11 @@
 using namespace QtDataVisualization;
 
 
-SurfaceGraph::SurfaceGraph(Q3DSurface *surface, QSerialPort *serial, QWidget *main)
-    : m_graph(surface)
+SurfaceGraph::SurfaceGraph(Q3DSurface *surface, QSerialPort *serial, QWidget *parent)
+    :QObject(parent)
 {
 
+    m_graph=surface;
     m_graph->setAxisX(new QValue3DAxis);
     m_graph->setAxisY(new QValue3DAxis);
     m_graph->setAxisZ(new QValue3DAxis);
@@ -26,25 +27,24 @@ SurfaceGraph::SurfaceGraph(Q3DSurface *surface, QSerialPort *serial, QWidget *ma
     m_graph->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);
 
     data_serial=serial;       
-
 }
+
 
 SurfaceGraph::~SurfaceGraph()
 {
-    delete m_graph;
 }
 
 void SurfaceGraph::sendGo(){
-    QByteArray data;
-    data.append("GO;");
-    this->data_serial->write(data);
-    qDebug()<<"Sent Signal from surface";
+    this->data_serial->write(response::GO);
 
-    emit sendSerial(data);
 }
 
 void SurfaceGraph::sendReady(){
-    this->data_serial->write("RDY;");
+    this->data_serial->write(response::READY);
+}
+
+void SurfaceGraph::sendDone(){
+    this->data_serial->write(response::DONE);
 }
 
 void SurfaceGraph::fillAFMProxy(QList <QByteArray> data)
@@ -82,9 +82,9 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data)
 
 
 
-void SurfaceGraph::enableAFMModel(bool enable)
+void SurfaceGraph::enableAFMModel()
 {
-    if (enable) {
+
 
         AFM_Series->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
         AFM_Series->setFlatShadingEnabled(true);
@@ -100,7 +100,7 @@ void SurfaceGraph::enableAFMModel(bool enable)
 
         m_graph->addSeries(AFM_Series);
 
-    }
+
 }
 
 void SurfaceGraph::adjustCameraZ(int angle)
@@ -149,4 +149,12 @@ void SurfaceGraph::setAxisScaling(int sizeX){
 
     m_graph->axisX()->setRange(0,sizeX);
 
+}
+
+void SurfaceGraph::dataHandler(QByteArray data){
+
+        data.replace(";","");
+        QList <QByteArray> splitData=data.split(',');
+        qDebug()<<"last element"<<splitData.back();
+        fillAFMProxy(splitData);
 }

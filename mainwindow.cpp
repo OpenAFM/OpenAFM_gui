@@ -3,7 +3,6 @@
 #include "tx_rx_protocol.h"
 #include "def_commands.h"
 #include "scannerwindow.h"
-#include "scan_setup.h"
 
 
 
@@ -64,6 +63,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->pushButton->setEnabled(false);
     ui->calibration_PB->setEnabled(false);
+    ui->setup_pushButton->setEnabled(false);
+
 
     setupStreaming(ui->customPlot);
 }
@@ -89,20 +90,20 @@ void MainWindow::putChar(char data)
 
 void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
 {
-    if(previousResponse==RESPONSE_READY && buffer!=READY){
+    if(previous_response==response::READY && buffer!=response::READY){
         emit plotDataReceived(buffer);
     }
-    if(buffer==READY){
+    if(buffer==response::READY){
         qDebug()<<"RDY";
-       previousResponse=RESPONSE_READY;
+       previous_response=response::READY;
     }
-    if(buffer==GO){
-        qDebug()<<"GO";
-       previousResponse=RESPONSE_GO;
+    if(buffer==response::GO){
+        qDebug()<<"response::GO";
+       previous_response=response::GO;
     }
-    if(buffer==DONE){
-        qDebug()<<"DONE";
-       previousResponse=RESPONSE_DONE;
+    if(buffer==response::DONE){
+        qDebug()<<"response::DONE";
+       previous_response=response::DONE;
     }
 }
 
@@ -156,8 +157,10 @@ void MainWindow::openSerialPort()
                                        .arg(QSerialPort::OneStop)
                                        .arg(QSerialPort::NoFlowControl));
             ui->pushButton_connect->setText("Disconnect");
+
             ui->pushButton->setEnabled(true);
             ui->calibration_PB->setEnabled(true);
+            ui->setup_pushButton->setEnabled(true);
 
             const QSerialPortInfo info= QSerialPortInfo(*serial);
             ui->label_deviceSignature->setText(info.description());
@@ -181,6 +184,7 @@ void MainWindow::closeSerialPort()
     ui->pushButton_connect->setText("Connect");
     ui->pushButton->setEnabled(false);
     ui->calibration_PB->setEnabled(false);
+    ui->setup_pushButton->setEnabled(false);
 
     ui->label_deviceSignature->setText(" ");
 }
@@ -252,8 +256,6 @@ void MainWindow::handleError(QSerialPort::SerialPortError error)
 void MainWindow::on_pushButton_clicked()
 {
      scannerwindow* Scanner= new scannerwindow(this, serial);
-     Scanner->setModal(true);
-     Scanner->exec();
 }
 
 void MainWindow::on_pushButton_Send_clicked()
@@ -271,10 +273,6 @@ void MainWindow::on_lineEdit_Data_returnPressed()
     sendData();
 }
 
-void MainWindow::on_scan_setup1_textChanged()
-{
-
-}
 
 /*Calibration tab functions*/
 
@@ -331,7 +329,7 @@ void MainWindow::realtimeDataSlot(QByteArray data)
     ui->customPlot->graph(0)->rescaleValueAxis();
     ui->customPlot->replot();
 
-    putChar("RDY;");
+    putChar(response::READY);
 
 }
 
@@ -341,12 +339,12 @@ void MainWindow::on_calibration_PB_toggled(bool checked)
 {
     if(checked){
     ui->calibration_PB->setText("Done");
-    sendData("STREAM;");
-    sendData("RDY;");
+    sendData(response::STREAM);
+    sendData(response::READY);
     }
     else{
      ui->calibration_PB->setText("Calibrate");
-     sendData("DONE;");
+     sendData(response::DONE);
     }
 }
 
@@ -356,12 +354,13 @@ void MainWindow::on_setup_pushButton_clicked()
     QByteArray lineLength=QByteArray::number (ui->line_length_spinBox->value());
     QByteArray sampleSize=QByteArray::number (ui->sample_size_spinBox_2->value());
 
-    sendData("SETUP;");
+    sendData(response::SETUP);
     sendData(stepSize);
-    sendData(";");
+    sendData(response::F_BOUNDARY);
     sendData(lineLength);
-    sendData(";");
+    sendData(response::F_BOUNDARY);
     sendData(sampleSize);
-    sendData(";");
+    sendData(response::F_BOUNDARY);
+
 
 }
