@@ -2785,8 +2785,8 @@ protected:
   QList<QCPBars*> mBars;
   
   // non-virtual methods:
-  void registerBars(QCPBars *bars);
-  void unregisterBars(QCPBars *bars);
+  void Bars(QCPBars *bars);
+  void unBars(QCPBars *bars);
   
   // virtual methods:
   double keyPixelOffset(const QCPBars *bars, double keyCoord);
@@ -3059,6 +3059,7 @@ public:
   virtual ~QCPColorMap();
   
   // getters:
+  virtual QCPRange getKeyRange(bool &foundRange, SignDomain inSignDomain=sdBoth) const;
   QCPColorMapData *data() const { return mMapData; }
   QCPRange dataRange() const { return mDataRange; }
   QCPAxis::ScaleType dataScaleType() const { return mDataScaleType; }
@@ -3066,7 +3067,8 @@ public:
   bool tightBoundary() const { return mTightBoundary; }
   QCPColorGradient gradient() const { return mGradient; }
   QCPColorScale *colorScale() const { return mColorScale.data(); }
-  
+  virtual QCPRange getValueRange(bool &foundRange, SignDomain inSignDomain=sdBoth) const;
+
   // setters:
   void setData(QCPColorMapData *data, bool copy=false);
   Q_SLOT void setDataRange(const QCPRange &dataRange);
@@ -3109,8 +3111,6 @@ protected:
   // reimplemented virtual methods:
   virtual void draw(QCPPainter *painter);
   virtual void drawLegendIcon(QCPPainter *painter, const QRectF &rect) const;
-  virtual QCPRange getKeyRange(bool &foundRange, SignDomain inSignDomain=sdBoth) const;
-  virtual QCPRange getValueRange(bool &foundRange, SignDomain inSignDomain=sdBoth) const;
   
   friend class QCustomPlot;
   friend class QCPLegend;

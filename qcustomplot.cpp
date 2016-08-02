@@ -1734,8 +1734,8 @@ QCPLayoutElement::QCPLayoutElement(QCustomPlot *parentPlot) :
 
 QCPLayoutElement::~QCPLayoutElement()
 {
-  setMarginGroup(QCP::msAll, 0); // unregister at margin groups, if there are any
-  // unregister at layout:
+  setMarginGroup(QCP::msAll, 0); // un at margin groups, if there are any
+  // un at layout:
   if (qobject_cast<QCPLayout*>(mParentLayout)) // the qobject_cast is just a safeguard in case the layout forgets to call clear() in its dtor and this dtor is called by QObject dtor
     mParentLayout->take(this);
 }
@@ -1888,10 +1888,10 @@ void QCPLayoutElement::setMarginGroup(QCP::MarginSides sides, QCPMarginGroup *gr
     if (marginGroup(side) != group)
     {
       QCPMarginGroup *oldGroup = marginGroup(side);
-      if (oldGroup) // unregister at old group
+      if (oldGroup) // un at old group
         oldGroup->removeChild(side, this);
       
-      if (!group) // if setting to 0, remove hash entry. Else set hash entry to new group and register there
+      if (!group) // if setting to 0, remove hash entry. Else set hash entry to new group and  there
       {
         mMarginGroups.remove(side);
       } else // setting to a new group
@@ -7459,7 +7459,7 @@ QCPItemAnchor::QCPItemAnchor(QCustomPlot *parentPlot, QCPAbstractItem *parentIte
 
 QCPItemAnchor::~QCPItemAnchor()
 {
-  // unregister as parent at children:
+  // un as parent at children:
   foreach (QCPItemPosition *child, mChildrenX.toList())
   {
     if (child->parentAnchorX() == this)
@@ -7635,7 +7635,7 @@ QCPItemPosition::QCPItemPosition(QCustomPlot *parentPlot, QCPAbstractItem *paren
 
 QCPItemPosition::~QCPItemPosition()
 {
-  // unregister as parent at children:
+  // un as parent at children:
   // Note: this is done in ~QCPItemAnchor again, but it's important QCPItemPosition does it itself, because only then
   //       the setParentAnchor(0) call the correct QCPItemPosition::pixelPoint function instead of QCPItemAnchor::pixelPoint
   foreach (QCPItemPosition *child, mChildrenX.toList())
@@ -7648,7 +7648,7 @@ QCPItemPosition::~QCPItemPosition()
     if (child->parentAnchorY() == this)
       child->setParentAnchorY(0); // this acts back on this anchor and child removes itself from mChildrenY
   }
-  // unregister as child in parent:
+  // un as child in parent:
   if (mParentAnchorX)
     mParentAnchorX->removeChildX(this);
   if (mParentAnchorY)
@@ -7827,10 +7827,10 @@ bool QCPItemPosition::setParentAnchorX(QCPItemAnchor *parentAnchor, bool keepPix
   QPointF pixelP;
   if (keepPixelPosition)
     pixelP = pixelPoint();
-  // unregister at current parent anchor:
+  // un at current parent anchor:
   if (mParentAnchorX)
     mParentAnchorX->removeChildX(this);
-  // register at new parent anchor:
+  //  at new parent anchor:
   if (parentAnchor)
     parentAnchor->addChildX(this);
   mParentAnchorX = parentAnchor;
@@ -7892,10 +7892,10 @@ bool QCPItemPosition::setParentAnchorY(QCPItemAnchor *parentAnchor, bool keepPix
   QPointF pixelP;
   if (keepPixelPosition)
     pixelP = pixelPoint();
-  // unregister at current parent anchor:
+  // un at current parent anchor:
   if (mParentAnchorY)
     mParentAnchorY->removeChildY(this);
-  // register at new parent anchor:
+  //  at new parent anchor:
   if (parentAnchor)
     parentAnchor->addChildY(this);
   mParentAnchorY = parentAnchor;
@@ -8617,7 +8617,7 @@ QPointF QCPAbstractItem::anchorPixelPoint(int anchorId) const
 
 /*! \internal
 
-  Creates a QCPItemPosition, registers it with this item and returns a pointer to it. The specified
+  Creates a QCPItemPosition, s it with this item and returns a pointer to it. The specified
   \a name must be a unique string that is usually identical to the variable name of the position
   member (This is needed to provide the name-based \ref position access to positions).
   
@@ -8625,7 +8625,7 @@ QPointF QCPAbstractItem::anchorPixelPoint(int anchorId) const
   
   Use this function in the constructor (initialization list) of the specific item subclass to
   create each position member. Don't create QCPItemPositions with \b new yourself, because they
-  won't be registered with the item properly.
+  won't be ed with the item properly.
   
   \see createAnchor
 */
@@ -8646,7 +8646,7 @@ QCPItemPosition *QCPAbstractItem::createPosition(const QString &name)
 
 /*! \internal
 
-  Creates a QCPItemAnchor, registers it with this item and returns a pointer to it. The specified
+  Creates a QCPItemAnchor, s it with this item and returns a pointer to it. The specified
   \a name must be a unique string that is usually identical to the variable name of the anchor
   member (This is needed to provide the name based \ref anchor access to anchors).
   
@@ -8659,7 +8659,7 @@ QCPItemPosition *QCPAbstractItem::createPosition(const QString &name)
   
   Use this function in the constructor (initialization list) of the specific item subclass to
   create each anchor member. Don't create QCPItemAnchors with \b new yourself, because then they
-  won't be registered with the item properly.
+  won't be ed with the item properly.
   
   \see createPosition
 */
@@ -18216,9 +18216,9 @@ void QCPBarsGroup::remove(QCPBars *bars)
   Adds the specified \a bars to the internal mBars list of bars. This method does not change the
   barsGroup property on \a bars.
   
-  \see unregisterBars
+  \see unBars
 */
-void QCPBarsGroup::registerBars(QCPBars *bars)
+void QCPBarsGroup::Bars(QCPBars *bars)
 {
   if (!mBars.contains(bars))
     mBars.append(bars);
@@ -18229,9 +18229,9 @@ void QCPBarsGroup::registerBars(QCPBars *bars)
   Removes the specified \a bars from the internal mBars list of bars. This method does not change
   the barsGroup property on \a bars.
   
-  \see registerBars
+  \see Bars
 */
-void QCPBarsGroup::unregisterBars(QCPBars *bars)
+void QCPBarsGroup::unBars(QCPBars *bars)
 {
   mBars.removeOne(bars);
 }
@@ -18512,13 +18512,13 @@ void QCPBars::setWidthType(QCPBars::WidthType widthType)
 */
 void QCPBars::setBarsGroup(QCPBarsGroup *barsGroup)
 {
-  // deregister at old group:
+  // de at old group:
   if (mBarsGroup)
-    mBarsGroup->unregisterBars(this);
+    mBarsGroup->unBars(this);
   mBarsGroup = barsGroup;
-  // register at new group:
+  //  at new group:
   if (mBarsGroup)
-    mBarsGroup->registerBars(this);
+    mBarsGroup->Bars(this);
 }
 
 /*!

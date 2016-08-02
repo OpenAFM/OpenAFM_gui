@@ -76,6 +76,7 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data)
 
         sendReady();
 }
+        else emit scanFinished();
 
 
 }

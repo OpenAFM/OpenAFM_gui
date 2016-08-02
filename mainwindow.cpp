@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
 
+
     ui->setupUi(this);
     ui->statusBar->showMessage("Qt to Arduino phone  example", 3000);
     serial = new QSerialPort(this);

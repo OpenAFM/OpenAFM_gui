@@ -50,6 +50,8 @@ public:
     float sampleMin = -8.0f;
     float sampleMax = 8.0f;
 
+    QSurfaceDataProxy *AFM_Proxy;
+
 
 
 
@@ -67,7 +69,6 @@ public Q_SLOTS:
 private:
     Q3DSurface *m_graph;
     QSurface3DSeries *AFM_Series;
-    QSurfaceDataProxy *AFM_Proxy;
 
 
     QSlider *m_axisCameraSliderZ;

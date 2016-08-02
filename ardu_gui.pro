@@ -17,6 +17,7 @@ SOURCES += main.cpp\
         surfacegraph.cpp \
         scannerwindow.cpp \
         qcustomplot.cpp \
+    intensitymap.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -25,12 +26,14 @@ HEADERS  += mainwindow.h \
         surfacegraph.h \
         scannerwindow.h \
         qcustomplot.h \
+    intensitymap.h
 
 
 LIBS += -framework QtCore
 
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    intensitymap.ui
 
 
 QMAKE_LFLAGS  += -Wl,-rpath,@executable_path/../Frameworks \

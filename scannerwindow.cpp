@@ -21,14 +21,16 @@
 #include <QtGui/QScreen>
 #include <QObject>
 #include <QDebug>
+#include <QImage>
+
 
 scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
     QObject(parent)
 {
 
-    QWidget* widget = new QWidget();
+    widget = new QWidget();
     widget->setAttribute(Qt::WA_DeleteOnClose);
-    Q3DSurface *graph = new Q3DSurface();
+    graph = new Q3DSurface();
     QWidget* container = QWidget::createWindowContainer(graph, widget);
     container->setAttribute(Qt::WA_AcceptTouchEvents);
 
@@ -57,13 +59,19 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
 
 
 
-    QPushButton *AFM_Scan_3D_RB = new QPushButton(widget);
+
+    AFM_Scan_3D_RB = new QPushButton(widget);
     AFM_Scan_3D_RB->setText(QStringLiteral("Start Scan"));
     AFM_Scan_3D_RB->setCheckable(true);
     AFM_Scan_3D_RB->setChecked(false);
 
+
+    BitmapView = new QPushButton(widget);
+    BitmapView->setText(QStringLiteral("Show Bitmap"));
+
     QVBoxLayout *modelVBox = new QVBoxLayout;
     modelVBox->addWidget(AFM_Scan_3D_RB);
+    modelVBox->addWidget(BitmapView);
 
     modelGroupBox->setLayout(modelVBox);
 
@@ -103,8 +111,6 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
     axisCameraSliderY->setMaximum(180);
     axisCameraSliderY->setTickInterval(0);
     axisCameraSliderY->setEnabled(true);
-
-
 
 
     QComboBox *themeList = new QComboBox(widget);
@@ -161,7 +167,7 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
 
     widget->show();
 
-    SurfaceGraph *modifier= new SurfaceGraph(graph, serial, widget);
+    modifier= new SurfaceGraph(graph, serial, widget);
 
 
 
@@ -170,15 +176,28 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
 
     QObject::connect(widget,SIGNAL(destroyed()),modifier, SLOT(sendDone()));
 
+    QObject::connect(this, SIGNAL (AFMDone()),
+                     modifier, SLOT (sendDone()));
+
     QObject::connect(widget,SIGNAL(destroyed()),this, SLOT(close()));
 
-    QObject::connect(AFM_Scan_3D_RB, SIGNAL (clicked()),
-                     modifier, SLOT(enableAFMModel()));
+    QObject::connect(modifier, SIGNAL (scanFinished()),
+                     this, SLOT(endScan()));
 
-    QObject::connect(AFM_Scan_3D_RB, SIGNAL (clicked()),
+
+    QObject::connect(BitmapView, SIGNAL (clicked()),
+                     this, SLOT(getBitmapScreen()));
+
+    QObject::connect(AFM_Scan_3D_RB, SIGNAL (toggled(bool)),
+                     this, SLOT(AFMButtonHandler(bool)));
+
+    QObject::connect(this, SIGNAL (AFMStart()),
+                     modifier, SLOT (enableAFMModel()));
+
+    QObject::connect(this, SIGNAL (AFMStart()),
                      modifier, SLOT (sendGo()));
 
-    QObject::connect(AFM_Scan_3D_RB, SIGNAL (clicked()),
+    QObject::connect(this, SIGNAL (AFMStart()),
                      modifier, SLOT(sendReady()));
 
     QObject::connect(modeNoneRB, &QRadioButton::toggled,
@@ -193,6 +212,7 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
 
     QObject::connect(themeList, SIGNAL(currentIndexChanged(int)),
                      modifier, SLOT(changeTheme(int)));
+
     QObject::connect(gradientBtoYPB, &QPushButton::pressed,
                      modifier, &SurfaceGraph::setBlackToYellowGradient);
     QObject::connect(gradientGtoRPB, &QPushButton::pressed,
@@ -209,8 +229,10 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
 
 
 
-    AFM_Scan_3D_RB->setChecked(true);
+    AFM_Scan_3D_RB->setChecked(false);
     modeItemRB->setChecked(true);
+    BitmapView->setEnabled(false);
+
     themeList->setCurrentIndex(2);
 }
 
@@ -226,6 +248,38 @@ void scannerwindow::close(){
     delete this;
 }
 
+void scannerwindow::getBitmapScreen(){
+    intensitymap* BitmapScreen= new intensitymap(modifier->AFM_Proxy, widget);
+    BitmapScreen->setModal(false);
+    BitmapScreen->exec();
+}
+
+void scannerwindow::endScan(){
+    AFM_Scan_3D_RB->setEnabled(false);
+    AFM_Scan_3D_RB->setText("Done");
+    BitmapView->setEnabled(true);
+
+
+
+}
+
+void scannerwindow::AFMButtonHandler(bool checked){
+    if(!checked){
+        emit AFMDone();
+        AFM_Scan_3D_RB->setText("Stopped");
+        AFM_Scan_3D_RB->setStyleSheet("color: #000000;");
+
+        BitmapView->setEnabled(true);
+
+    }
+    else{
+        emit AFMStart();
+        AFM_Scan_3D_RB->setText("End Scan");
+        AFM_Scan_3D_RB->setStyleSheet("color: #ffffff;");
+        BitmapView->setEnabled(false);
+
+    }
+}
 
 
 
