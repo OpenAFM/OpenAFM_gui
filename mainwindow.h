@@ -20,9 +20,11 @@ public:
     ~MainWindow();
     QByteArray bytesReceived;
     QByteArray previous_response;
-
-
-
+    int lineLength;
+    int stepSize;
+    int sampleSize;
+    QList<int> parameters;
+    QTextStream* stream;
 public slots:
 
     void putChar(QByteArray data);
@@ -43,6 +45,7 @@ signals:
 private:
     QTimer dataTimer;
     int previouskey=0;
+    void loadParameters();
 
     Ui::MainWindow *ui;
     void fillPortsInfo();
@@ -71,6 +74,7 @@ private slots:
 
     void on_calibration_PB_toggled(bool checked);
     void on_setup_pushButton_clicked();
+    void on_LoadScan_clicked();
 };
 
 #endif // MAINWINDOW_H

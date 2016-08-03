@@ -1,17 +1,27 @@
 #include "intensitymap.h"
 #include "ui_intensitymap.h"
-intensitymap::intensitymap(QSurfaceDataProxy* Series,QWidget *parent) :
+intensitymap::intensitymap(QSurfaceDataProxy* Series, QList <int> parameters,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::intensitymap)
 {
     ui->setupUi(this);
     dataSeries=Series;
     setupIntensityMap(ui->intensityMap);
+    //    parameters={lineLength, stepSize, sampleSize};
+
     ui->textBrowser->append("####AFM SCAN###\n");
     ui->textBrowser->append("Time: ");
-
     ui->textBrowser->append(QDateTime::currentDateTime().toString());
     ui->textBrowser->append("\n");
+    ui->textBrowser->append("Line Length");
+    ui->textBrowser->append(QString::number(parameters[0]));
+    ui->textBrowser->append("Step Size");
+    ui->textBrowser->append(QString::number(parameters[1]));
+    ui->textBrowser->append("Sample Size");
+    ui->textBrowser->append(QString::number(parameters[2]));
+
+
+
 
 
 }
@@ -89,5 +99,15 @@ void intensitymap::on_rangeMaxSlider_valueChanged(int value)
 
 void intensitymap::on_save_pb_clicked()
 {
-    ui->intensityMap->saveBmp("AFM_demo_scan");
+    QString filepath = QFileDialog::getExistingDirectory();
+    QFile file(filepath+"/AFM_Scan_config_"+QDate::currentDate().toString()+"_"+QTime::currentTime().toString());
+    if(!filepath.isNull()){
+    if ( file.open(QIODevice::ReadWrite) )
+    {
+        QTextStream stream( &file );
+        stream << ui->textBrowser->toPlainText() << endl;
+        ui->intensityMap->saveBmp(filepath+"/AFM_Scan_image"+QDate::currentDate().toString()+"_"+QTime::currentTime().toString());
+    }
+    else{QMessageBox::critical(this, tr("Error"), "File Can't Be Opened");}
+}
 }

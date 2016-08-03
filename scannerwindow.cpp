@@ -6,32 +6,16 @@
 
 
 
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QMessageBox>
-#include <QtGui/QPainter>
-#include <QtGui/QScreen>
-#include <QObject>
-#include <QDebug>
-#include <QImage>
 
 
-scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
+scannerwindow::scannerwindow(QList<int> parameters, QMainWindow *parent, QSerialPort *serial, bool load, QTextStream* stream):
     QObject(parent)
 {
-
+    this->parameters=parameters;
     widget = new QWidget();
     widget->setAttribute(Qt::WA_DeleteOnClose);
     graph = new Q3DSurface();
-    QWidget* container = QWidget::createWindowContainer(graph, widget);
+    container = QWidget::createWindowContainer(graph, widget);
     container->setAttribute(Qt::WA_AcceptTouchEvents);
 
     if (!graph->hasContext()) {
@@ -46,7 +30,6 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
     container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     container->setFocusPolicy(Qt::StrongFocus);
 
-
     QHBoxLayout *hLayout = new QHBoxLayout(widget);
     QVBoxLayout *vLayout = new QVBoxLayout();
     hLayout->addWidget(container, 1);
@@ -55,24 +38,28 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
 
     widget->setWindowTitle(QStringLiteral("AFM Scan"));
 
-    QGroupBox *modelGroupBox = new QGroupBox(QStringLiteral("Model"));
+    QGroupBox *modelGroupBox = new QGroupBox(QStringLiteral("Scan"));
 
 
 
-
+if(!load){
     AFM_Scan_3D_RB = new QPushButton(widget);
     AFM_Scan_3D_RB->setText(QStringLiteral("Start Scan"));
     AFM_Scan_3D_RB->setCheckable(true);
     AFM_Scan_3D_RB->setChecked(false);
-
+}
 
     BitmapView = new QPushButton(widget);
     BitmapView->setText(QStringLiteral("Show Bitmap"));
 
-    QVBoxLayout *modelVBox = new QVBoxLayout;
-    modelVBox->addWidget(AFM_Scan_3D_RB);
-    modelVBox->addWidget(BitmapView);
+    SaveSurface = new QPushButton(widget);
+    SaveSurface->setText(QStringLiteral("Save Data"));
 
+
+    QVBoxLayout *modelVBox = new QVBoxLayout;
+   if(!load){ modelVBox->addWidget(AFM_Scan_3D_RB);}
+    modelVBox->addWidget(BitmapView);
+    modelVBox->addWidget(SaveSurface);
     modelGroupBox->setLayout(modelVBox);
 
     QGroupBox *selectionGroupBox = new QGroupBox(QStringLiteral("Selection Mode"));
@@ -167,38 +154,50 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
 
     widget->show();
 
-    modifier= new SurfaceGraph(graph, serial, widget);
+    modifier= new SurfaceGraph(graph, serial, widget,parameters);
 
 
-
+if(!load){
     QObject::connect(parent, SIGNAL(plotDataReceived(QByteArray)),
                      modifier, SLOT(dataHandler(QByteArray)));
-
-    QObject::connect(widget,SIGNAL(destroyed()),modifier, SLOT(sendDone()));
-
-    QObject::connect(this, SIGNAL (AFMDone()),
-                     modifier, SLOT (sendDone()));
-
-    QObject::connect(widget,SIGNAL(destroyed()),this, SLOT(close()));
-
-    QObject::connect(modifier, SIGNAL (scanFinished()),
-                     this, SLOT(endScan()));
-
-
-    QObject::connect(BitmapView, SIGNAL (clicked()),
-                     this, SLOT(getBitmapScreen()));
 
     QObject::connect(AFM_Scan_3D_RB, SIGNAL (toggled(bool)),
                      this, SLOT(AFMButtonHandler(bool)));
 
+
     QObject::connect(this, SIGNAL (AFMStart()),
                      modifier, SLOT (enableAFMModel()));
+
+
+    QObject::connect(this, SIGNAL (AFMDone()),
+                     modifier, SLOT (sendDone()));
+
 
     QObject::connect(this, SIGNAL (AFMStart()),
                      modifier, SLOT (sendGo()));
 
     QObject::connect(this, SIGNAL (AFMStart()),
                      modifier, SLOT(sendReady()));
+
+
+
+}
+
+
+    QObject::connect(widget,SIGNAL(destroyed()),this, SLOT(close()));
+
+    QObject::connect(modifier, SIGNAL (scanFinished()),
+                     this, SLOT(endScan()));
+
+    QObject::connect(widget,SIGNAL(destroyed()),modifier, SLOT(sendDone()));
+
+    QObject::connect(SaveSurface, SIGNAL (clicked()),
+                     modifier, SLOT(saveData()));
+
+    QObject::connect(BitmapView, SIGNAL (clicked()),
+                     this, SLOT(getBitmapScreen()));
+
+
 
     QObject::connect(modeNoneRB, &QRadioButton::toggled,
                      modifier, &SurfaceGraph::toggleModeNone);
@@ -229,11 +228,16 @@ scannerwindow::scannerwindow(QMainWindow *parent, QSerialPort *serial):
 
 
 
-    AFM_Scan_3D_RB->setChecked(false);
+    if(!load){AFM_Scan_3D_RB->setChecked(false);}
+
     modeItemRB->setChecked(true);
     BitmapView->setEnabled(false);
 
     themeList->setCurrentIndex(2);
+    if(load){
+     modifier->enableAFMModel();
+     modifier->fillAFMProxy(mock,load,stream);
+    }
 }
 
 
@@ -249,7 +253,7 @@ void scannerwindow::close(){
 }
 
 void scannerwindow::getBitmapScreen(){
-    intensitymap* BitmapScreen= new intensitymap(modifier->AFM_Proxy, widget);
+    intensitymap* BitmapScreen= new intensitymap(modifier->AFM_Proxy, parameters,widget);
     BitmapScreen->setModal(false);
     BitmapScreen->exec();
 }
@@ -280,6 +284,8 @@ void scannerwindow::AFMButtonHandler(bool checked){
 
     }
 }
+void scannerwindow::saveImage(){
 
+   }
 
 

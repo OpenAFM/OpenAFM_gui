@@ -15,7 +15,7 @@ class intensitymap : public QDialog
     Q_OBJECT
 
 public:
-    explicit intensitymap(QSurfaceDataProxy* series,QWidget *parent = 0);
+    explicit intensitymap(QSurfaceDataProxy* series, QList <int> ScanData, QWidget *parent = 0);
     ~intensitymap();
     void setupIntensityMap(QCustomPlot *customPlot );
 

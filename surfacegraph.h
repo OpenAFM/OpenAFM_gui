@@ -9,6 +9,7 @@
 #include <QtDataVisualization/QSurface3DSeries>
 #include <QtWidgets/QSlider>
 #include <QtSerialPort/QSerialPort>
+#include <QDialog>
 
 
 using namespace QtDataVisualization;
@@ -17,7 +18,7 @@ class SurfaceGraph : public QObject
 {
     Q_OBJECT
 public:
-    explicit SurfaceGraph(Q3DSurface *surface, QSerialPort *serial, QWidget *main);
+    explicit SurfaceGraph(Q3DSurface *surface, QSerialPort *serial, QWidget *main,QList<int>);
     ~SurfaceGraph();
 
 
@@ -54,7 +55,6 @@ public:
 
 
 
-
 public Q_SLOTS:
 
     void enableAFMModel();
@@ -62,11 +62,13 @@ public Q_SLOTS:
     void sendGo();
     void sendDone();
     void changeTheme(int theme);
-    void fillAFMProxy(QList<QByteArray> data);
+    void fillAFMProxy(QList<QByteArray> data,bool load=0, QTextStream* stream=nullptr);
     void dataHandler(QByteArray);
-
+    void saveData();
 
 private:
+    QList <QVector3D> list;
+    QList<int> parameters;
     Q3DSurface *m_graph;
     QSurface3DSeries *AFM_Series;
 

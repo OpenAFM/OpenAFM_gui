@@ -66,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->calibration_PB->setEnabled(false);
     ui->setup_pushButton->setEnabled(false);
 
+    loadParameters();
 
     setupStreaming(ui->customPlot);
 }
@@ -74,6 +75,15 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+void MainWindow::loadParameters(){
+
+    lineLength=ui->line_length_spinBox->value();
+    stepSize=ui->step_size_spinBox_3->value();
+    sampleSize=ui->sample_size_spinBox_2->value();
+
+    parameters={lineLength, stepSize, sampleSize};
+
 }
 
 void MainWindow::putChar(QByteArray data)
@@ -256,7 +266,7 @@ void MainWindow::handleError(QSerialPort::SerialPortError error)
 
 void MainWindow::on_pushButton_clicked()
 {
-     scannerwindow* Scanner= new scannerwindow(this, serial);
+     scannerwindow* Scanner= new scannerwindow(parameters, this, serial);
 }
 
 void MainWindow::on_pushButton_Send_clicked()
@@ -351,6 +361,8 @@ void MainWindow::on_calibration_PB_toggled(bool checked)
 
 void MainWindow::on_setup_pushButton_clicked()
 {
+    loadParameters();
+
     QByteArray stepSize= QByteArray::number(ui->step_size_spinBox_3->value());
     QByteArray lineLength=QByteArray::number (ui->line_length_spinBox->value());
     QByteArray sampleSize=QByteArray::number (ui->sample_size_spinBox_2->value());
@@ -364,4 +376,23 @@ void MainWindow::on_setup_pushButton_clicked()
     sendData(response::F_BOUNDARY);
 
 
+}
+
+void MainWindow::on_LoadScan_clicked()
+{
+    QString filepath = QFileDialog::getOpenFileName();
+    QFile file(filepath);
+if(!filepath.isNull()){
+    if(file.open(QIODevice::ReadWrite)){
+
+    stream=new QTextStream(&file);
+    scannerwindow* Scanner= new scannerwindow(parameters, this, serial,true,stream);
+
+    }
+
+    else{
+        QMessageBox::critical(this, tr("Error"), "File Can't Be Opened");
+
+    }
+}
 }

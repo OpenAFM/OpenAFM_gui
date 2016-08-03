@@ -4,15 +4,22 @@
 #include <QtDataVisualization/Q3DTheme>
 #include <QtGui/QImage>
 #include <QtCore/qmath.h>
+#include <QFileDialog>
+#include <QMessageBox>
+
+#include <QDate>
+#include <QTime>
+
+
 
 
 using namespace QtDataVisualization;
 
 
-SurfaceGraph::SurfaceGraph(Q3DSurface *surface, QSerialPort *serial, QWidget *parent)
+SurfaceGraph::SurfaceGraph(Q3DSurface *surface, QSerialPort *serial, QWidget *parent,QList<int> parameters)
     :QObject(parent)
 {
-
+    this->parameters=parameters;
     m_graph=surface;
     m_graph->setAxisX(new QValue3DAxis);
     m_graph->setAxisY(new QValue3DAxis);
@@ -47,15 +54,56 @@ void SurfaceGraph::sendDone(){
     this->data_serial->write(response::DONE);
 }
 
-void SurfaceGraph::fillAFMProxy(QList <QByteArray> data)
+void SurfaceGraph::fillAFMProxy(QList <QByteArray> data, bool load, QTextStream *stream)
 {
-        float stepX = 1;
+
+    if(load){
+
+    int temp;
+    QVector3D vect;
+    *stream>>temp;
+    sampleCountX=temp;
+    bool addingData=true;
+
+    while(!stream->atEnd()&&addingData){
+
+    QSurfaceDataRow *newRow = new QSurfaceDataRow(sampleCountX);
+
+    for(int i=0;i<sampleCountX;++i){
+    *stream>>temp;
+
+
+    vect.setX(temp);
+    *stream>>temp;
+
+    vect.setY(temp);
+    *stream>>temp;
+    if(temp==0){
+        addingData=false;
+        break;
+    }
+
+    vect.setZ(temp);
+    (*newRow)[i].setPosition(vect);
+
+    }
+    if(addingData){AFM_Proxy->insertRow(AFM_Proxy->rowCount(),newRow);}
+    }
+    m_graph->axisZ()->setRange(0,AFM_Proxy->rowCount()+2);
+
+    }
+
+    if(!load){
+
+        float stepX = parameters[1];
+
         if(!size_set){
             int line_size=data.size()/2;
             sampleCountX=line_size;
             setAxisScaling(line_size);
             size_set=true;
         }
+
         if(sampleCountX==data.size()/2){
         QSurfaceDataRow *newRow = new QSurfaceDataRow(sampleCountX);
         qDebug()<<data;
@@ -65,8 +113,10 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data)
             float y = (data.front().toInt()+data.back().toInt())/2;
             data.pop_back();
             data.pop_front();
-            float z = AFM_Proxy->rowCount();
-            (*newRow)[index].setPosition(QVector3D(x, y, z+1));
+            float z = AFM_Proxy->rowCount()+1;
+            QVector3D vect(x,y,z);
+            list.append(vect);
+            (*newRow)[index].setPosition(vect);
             index++;
 
         }
@@ -78,6 +128,7 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data)
 }
         else emit scanFinished();
 
+}
 
 }
 
@@ -158,4 +209,25 @@ void SurfaceGraph::dataHandler(QByteArray data){
         QList <QByteArray> splitData=data.split(',');
         qDebug()<<"last element"<<splitData.back();
         fillAFMProxy(splitData);
+}
+
+void SurfaceGraph::saveData(){
+
+
+    QString filepath = QFileDialog::getExistingDirectory();
+    if (!filepath.isNull()){
+    QFile file(filepath+"/AFM_Scan_data_"+ QDate::currentDate().toString()+"_"+QTime::currentTime().toString());
+    if ( file.open(QIODevice::ReadWrite) )
+    {
+        QTextStream stream( &file );
+        stream<<sampleCountX<<endl;
+
+        for(QVector3D i:list){
+            stream<<i.x()<<" "<<i.y()<<" "<<i.z()<<endl;
+        }
+        file.close();
+
+    }
+    else {QMessageBox::critical(nullptr, tr("Error"), "File Can't Be Opened");}
+    }
 }
