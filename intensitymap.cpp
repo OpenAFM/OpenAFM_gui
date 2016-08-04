@@ -83,6 +83,7 @@ void intensitymap::setupIntensityMap(QCustomPlot *customPlot)
   colorScale->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroup);
 
   customPlot->rescaleAxes();
+  customPlot->xAxis->setScaleRatio(customPlot->yAxis,1);
 }
 void intensitymap::setCutOff(int max){
     QCPRange range(0,max);
