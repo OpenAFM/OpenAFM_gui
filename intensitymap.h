@@ -28,6 +28,13 @@ private slots:
 
     void on_save_pb_clicked();
 
+    void on_colorPickDD_currentIndexChanged(int index);
+
+    void on_invertRB_toggled(bool checked);
+
+
+    void on_interpolateRB_toggled(bool checked);
+
 private:
     QGraphicsScene *scene;
     QPixmap PixMap;

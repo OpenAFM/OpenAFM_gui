@@ -111,3 +111,41 @@ void intensitymap::on_save_pb_clicked()
     else{QMessageBox::critical(this, tr("Error"), "File Can't Be Opened");}
 }
 }
+
+void intensitymap::on_colorPickDD_currentIndexChanged(int index)
+{
+   switch(index){
+       case 0:
+           colorMap->setGradient(QCPColorGradient::gpPolar);
+            break;
+       case 1:
+            colorMap->setGradient(QCPColorGradient::gpThermal);
+            break;
+       case 2:
+            colorMap->setGradient(QCPColorGradient::gpHot);
+           break;
+       case 3:
+           colorMap->setGradient(QCPColorGradient::gpCold);
+           break;
+       case 4:
+            colorMap->setGradient(QCPColorGradient::gpGrayscale);
+           break;
+    }
+    ui->intensityMap->replot();
+
+}
+
+void intensitymap::on_invertRB_toggled(bool checked)
+{
+        colorMap->setGradient(colorMap->gradient().inverted());
+        ui->intensityMap->replot();
+
+}
+
+
+void intensitymap::on_interpolateRB_toggled(bool checked)
+{
+    colorMap->setInterpolate(checked);
+    ui->intensityMap->replot();
+
+}

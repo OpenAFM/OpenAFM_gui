@@ -174,7 +174,7 @@ void MainWindow::openSerialPort()
             ui->setup_pushButton->setEnabled(true);
 
             const QSerialPortInfo info= QSerialPortInfo(*serial);
-            ui->label_deviceSignature->setText(info.description());
+            ui->label_deviceSignature->setText(info.manufacturer());
             disconnect( ui->pushButton_connect, SIGNAL(clicked()),0, 0);
             QObject::connect(ui->pushButton_connect, SIGNAL(clicked()),
                              this, SLOT(closeSerialPort()));
@@ -315,7 +315,7 @@ void MainWindow::setupStreaming(QCustomPlot *customPlot)
   customPlot->axisRect()->setRangeZoom(Qt::Vertical);
 
   customPlot->axisRect()->setupFullAxesBox(true);
-
+  customPlot->setBackground(this->palette().background().color());
 }
 
 void MainWindow::realtimeDataSlot(QByteArray data)
@@ -335,9 +335,11 @@ void MainWindow::realtimeDataSlot(QByteArray data)
     ui->customPlot->graph(0)->removeDataBefore(key-15);
 
     // rescale value (vertical) axis to fit the current data:
-
+    ui->customPlot->yAxis->rescale(true);
     ui->customPlot->xAxis->setRange(key+1, 16, Qt::AlignRight);
-    ui->customPlot->graph(0)->rescaleValueAxis();
+    //ui->customPlot->graph(0)->rescaleValueAxis();
+    //ui->customPlot->graph(1)->rescaleValueAxis();
+
     ui->customPlot->replot();
 
     putChar(response::READY);

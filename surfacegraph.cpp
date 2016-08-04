@@ -106,7 +106,6 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data, bool load, QTextStream 
 
         if(sampleCountX==data.size()/2){
         QSurfaceDataRow *newRow = new QSurfaceDataRow(sampleCountX);
-        qDebug()<<data;
         int index = 0;
         for (int j = 0; j<sampleCountX; j++) {
             float x = (j * stepX);
@@ -123,7 +122,7 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data, bool load, QTextStream 
         m_graph->axisZ()->setRange(0,AFM_Proxy->rowCount()+2);
 
         AFM_Proxy->insertRow(AFM_Proxy->rowCount(),newRow);
-
+        qDebug()<<QTime::currentTime();
         sendReady();
 }
         else emit scanFinished();
