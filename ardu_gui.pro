@@ -33,7 +33,7 @@ LIBS += -framework QtCore
 
 
 FORMS    += mainwindow.ui \
-    intensitymap.ui
+    intensitymap.ui \
 
 
 QMAKE_LFLAGS  += -Wl,-rpath,@executable_path/../Frameworks \

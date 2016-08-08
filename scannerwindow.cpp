@@ -1,5 +1,5 @@
 #include "scannerwindow.h"
-#include "ui_scannerwindow.h"
+//#include "ui_scannerwindow.h"
 #include "tx_rx_protocol.h"
 #include "surfacegraph.h"
 
