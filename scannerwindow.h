@@ -44,6 +44,11 @@ public:
     Q3DSurface *graph;
     SurfaceGraph *modifier;
     QList<QByteArray> mock;
+    void initializeBitmapForward(QCustomPlot*);
+    void initializeBitmapBackward(QCustomPlot*);
+    void initializeBitmapCombined(QCustomPlot*);
+
+
 
 public slots:
     void close();
@@ -51,18 +56,54 @@ public slots:
     void AFMButtonHandler(bool);
     void endScan();
     void saveImage();
+    void realtimeDataSlotUpdate(QList <QByteArray>);
+
+    void ShowForwardContextMenu(const QPoint &pos);
+    void ShowBackwardContextMenu(const QPoint &pos);
+    void ShowCombinedContextMenu(const QPoint &pos);
+
+    void invertPlot(int);
+    void interpolatePlot(int);
+    void thermalPlot(int);
+    void grayscalePlot(int);
+    void hotPlot(int);
+    void coldPlot(int);
+    void polarPlot(int);
+
+
+
 
 
 signals:
     void AFMStart();
     void AFMDone();
 private:
+    double yIndex=0;
+    QCustomPlot *bitmapForward;
+    QCustomPlot *bitmapBackward;
+    QCustomPlot *bitmapCombined;
+
+    QCPColorMap *colorMapForward;
+    QCPColorScale *colorScaleForward;
+    QCPMarginGroup *marginGroupForward;
+
+    QCPColorMap *colorMapBackward;
+    QCPColorScale *colorScaleBackward;
+    QCPMarginGroup *marginGroupBackward;
+
+    QCPColorMap *colorMapCombined;
+    QCPColorScale *colorScaleCombined;
+    QCPMarginGroup *marginGroupCombined;
+
     QWidget* container;
     QList<int> parameters;
     QPushButton *AFM_Scan_3D_RB;
     QPushButton *BitmapView;
     QPushButton *SaveSurface;
 
+    void realtimeDataSlotForward(QList <QByteArray>);
+    void realtimeDataSlotBackward(QList <QByteArray>);
+    void realtimeDataSlotCombined(QList <QByteArray>);
 
 
 };

@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setup_pushButton->setEnabled(false);
 
     loadParameters();
-
+    qDebug()<<parameters[0];
     setupStreaming(ui->customPlot);
 }
 

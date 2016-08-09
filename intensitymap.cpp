@@ -7,16 +7,21 @@ intensitymap::intensitymap(QSurfaceDataProxy* Series, QList <int> parameters,QWi
     ui->setupUi(this);
     dataSeries=Series;
     setupIntensityMap(ui->intensityMap);
+    qDebug()<<"made it to constructor";
     //    parameters={lineLength, stepSize, sampleSize};
 
     ui->textBrowser->append("####AFM SCAN###\n");
+
     ui->textBrowser->append("Time: ");
     ui->textBrowser->append(QDateTime::currentDateTime().toString());
     ui->textBrowser->append("\n");
+
     ui->textBrowser->append("Line Length");
     ui->textBrowser->append(QString::number(parameters[0]));
+
     ui->textBrowser->append("Step Size");
     ui->textBrowser->append(QString::number(parameters[1]));
+
     ui->textBrowser->append("Sample Size");
     ui->textBrowser->append(QString::number(parameters[2]));
 
@@ -46,7 +51,7 @@ void intensitymap::setupIntensityMap(QCustomPlot *customPlot)
   int nx = dataSeries->rowCount();
   int ny = dataSeries->columnCount();
   colorMap->data()->setSize(nx, ny);
-  colorMap->data()->setRange(QCPRange(0, dataSeries->rowCount()), QCPRange(0, dataSeries->columnCount())); // and span the coordinate range -4..4 in both key (x) and value (y) dimensions
+  colorMap->data()->setRange(QCPRange(0, dataSeries->rowCount()), QCPRange(0, dataSeries->columnCount()));
   int max=0;
   double x, y, z;
 

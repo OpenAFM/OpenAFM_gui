@@ -53,7 +53,8 @@ public:
 
     QSurfaceDataProxy *AFM_Proxy;
 
-
+signals:
+    void fillBitmap(QList <QByteArray>);
 
 public Q_SLOTS:
 

@@ -26,14 +26,14 @@ HEADERS  += mainwindow.h \
         surfacegraph.h \
         scannerwindow.h \
         qcustomplot.h \
-    intensitymap.h
+        intensitymap.h
 
 
 LIBS += -framework QtCore
 
 
 FORMS    += mainwindow.ui \
-    intensitymap.ui \
+            intensitymap.ui \
 
 
 QMAKE_LFLAGS  += -Wl,-rpath,@executable_path/../Frameworks \

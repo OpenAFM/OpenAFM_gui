@@ -109,7 +109,7 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data, bool load, QTextStream 
         int index = 0;
         for (int j = 0; j<sampleCountX; j++) {
             float x = (j * stepX);
-            float y = (data.front().toInt()+data.back().toInt())/2;
+            float y = (data.front().toInt() + data.back().toInt())/2;
             data.pop_back();
             data.pop_front();
             float z = AFM_Proxy->rowCount()+1;
@@ -206,8 +206,8 @@ void SurfaceGraph::dataHandler(QByteArray data){
 
         data.replace(";","");
         QList <QByteArray> splitData=data.split(',');
-        qDebug()<<"last element"<<splitData.back();
         fillAFMProxy(splitData);
+        emit fillBitmap(splitData);
 }
 
 void SurfaceGraph::saveData(){
