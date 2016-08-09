@@ -108,6 +108,7 @@ if(!load){
 
 
     QVBoxLayout *modelVBox = new QVBoxLayout;
+
    if(!load){ modelVBox->addWidget(AFM_Scan_3D_RB);}
     modelVBox->addWidget(BitmapView);
     modelVBox->addWidget(SaveSurface);
@@ -173,7 +174,6 @@ if(!load){
     QGroupBox *colorGroupBox = new QGroupBox(QStringLiteral("Custom gradient"));
 
     QLinearGradient grBtoY(0, 0, 1, 100);
-
     grBtoY.setColorAt(1.0, Qt::black);
     grBtoY.setColorAt(0.67, Qt::blue);
     grBtoY.setColorAt(0.33, Qt::red);
@@ -244,18 +244,17 @@ if(!load){
 
     QObject::connect(this, SIGNAL (AFMStart()),
                      modifier, SLOT(sendReady()));
-
-
-
 }
 
 
-    QObject::connect(widget,SIGNAL(destroyed()),this, SLOT(close()));
+    QObject::connect(widget,SIGNAL(destroyed()),
+                     this, SLOT(close()));
 
     QObject::connect(modifier, SIGNAL (scanFinished()),
                      this, SLOT(endScan()));
 
-    QObject::connect(widget,SIGNAL(destroyed()),modifier, SLOT(sendDone()));
+    QObject::connect(widget,SIGNAL(destroyed()),
+                     modifier, SLOT(sendDone()));
 
     QObject::connect(SaveSurface, SIGNAL (clicked()),
                      modifier, SLOT(saveData()));
@@ -314,7 +313,6 @@ if(!load){
 
 scannerwindow::~scannerwindow()
 {
-    qDebug()<<"closed";
 }
 
 void scannerwindow::close(){
@@ -405,6 +403,7 @@ void scannerwindow::initializeBitmapBackward(QCustomPlot* customPlot){
 
 
 }
+
 void scannerwindow::initializeBitmapCombined(QCustomPlot* customPlot){
 
     customPlot->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom);
@@ -433,6 +432,7 @@ void scannerwindow::initializeBitmapCombined(QCustomPlot* customPlot){
 
 
 }
+
 void scannerwindow::realtimeDataSlotUpdate(QList <QByteArray> data){
     if(data.size()>10){
     realtimeDataSlotForward(data);
@@ -457,6 +457,7 @@ void scannerwindow::realtimeDataSlotForward(QList <QByteArray> data)
     bitmapForward->xAxis->setScaleRatio(bitmapForward->yAxis,1);
     bitmapForward->replot();
  }
+
 void scannerwindow::realtimeDataSlotBackward(QList <QByteArray> data)
 {
     double z;
@@ -555,6 +556,7 @@ void scannerwindow::ShowForwardContextMenu(const QPoint &pos)
 
    contextMenu.exec(bitmapForward->mapToGlobal(pos));
 }
+
 void scannerwindow::ShowBackwardContextMenu(const QPoint &pos)
 {
    QMenu contextMenu(tr("Context menu"),bitmapBackward);
@@ -684,6 +686,7 @@ void scannerwindow::ShowCombinedContextMenu(const QPoint &pos)
 
    contextMenu.exec(bitmapCombined->mapToGlobal(pos));
 }
+
 void scannerwindow::invertPlot(int index){
     switch(index){
     case 0:
@@ -702,6 +705,7 @@ void scannerwindow::invertPlot(int index){
 
 
 }
+
 void scannerwindow::interpolatePlot(int index){
     switch(index){
     case 0:
@@ -720,6 +724,7 @@ void scannerwindow::interpolatePlot(int index){
 
 
 }
+
 void scannerwindow::polarPlot(int index){
     switch(index){
     case 0:
@@ -737,6 +742,7 @@ void scannerwindow::polarPlot(int index){
     }
 
 }
+
 void scannerwindow::hotPlot(int index){
     switch(index){
     case 0:
@@ -754,6 +760,7 @@ void scannerwindow::hotPlot(int index){
     }
 
 }
+
 void scannerwindow::coldPlot(int index){
     switch(index){
     case 0:
@@ -771,6 +778,7 @@ void scannerwindow::coldPlot(int index){
     }
 
 }
+
 void scannerwindow::thermalPlot(int index){
     switch(index){
     case 0:
@@ -788,6 +796,7 @@ void scannerwindow::thermalPlot(int index){
     }
 
 }
+
 void scannerwindow::grayscalePlot(int index){
     switch(index){
     case 0:

@@ -1,5 +1,6 @@
 #include "intensitymap.h"
 #include "ui_intensitymap.h"
+
 intensitymap::intensitymap(QSurfaceDataProxy* Series, QList <int> parameters,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::intensitymap)
@@ -7,7 +8,6 @@ intensitymap::intensitymap(QSurfaceDataProxy* Series, QList <int> parameters,QWi
     ui->setupUi(this);
     dataSeries=Series;
     setupIntensityMap(ui->intensityMap);
-    qDebug()<<"made it to constructor";
     //    parameters={lineLength, stepSize, sampleSize};
 
     ui->textBrowser->append("####AFM SCAN###\n");
@@ -25,70 +25,76 @@ intensitymap::intensitymap(QSurfaceDataProxy* Series, QList <int> parameters,QWi
     ui->textBrowser->append("Sample Size");
     ui->textBrowser->append(QString::number(parameters[2]));
 
-
-
-
-
-}
-
-intensitymap::~intensitymap()
-{
-    delete ui;
 }
 
 void intensitymap::setupIntensityMap(QCustomPlot *customPlot)
 {
 
-  customPlot->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom);
-  customPlot->axisRect()->setupFullAxesBox(true);
-  customPlot->xAxis->setLabel("x");
-  customPlot->yAxis->setLabel("y");
+    customPlot->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom);
+    customPlot->axisRect()->setupFullAxesBox(true);
+    customPlot->xAxis->setLabel("x");
+    customPlot->yAxis->setLabel("y");
 
 
-  colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
-  customPlot->addPlottable(colorMap);
+    colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
+    customPlot->addPlottable(colorMap);
 
-  int nx = dataSeries->rowCount();
-  int ny = dataSeries->columnCount();
-  colorMap->data()->setSize(nx, ny);
-  colorMap->data()->setRange(QCPRange(0, dataSeries->rowCount()), QCPRange(0, dataSeries->columnCount()));
-  int max=0;
-  double x, y, z;
+    int nx = dataSeries->rowCount();
+    int ny = dataSeries->columnCount();
+    colorMap->data()->setSize(nx, ny);
+    colorMap->data()->setRange(QCPRange(0, dataSeries->rowCount()), QCPRange(0, dataSeries->columnCount())); // and span the coordinate range -4..4 in both key (x) and value (y) dimensions
+    int max=0;
+    double x, y, z;
 
-  for (int xIndex=0; xIndex<nx; ++xIndex)
-  {
-    for (int yIndex=0; yIndex<ny; ++yIndex)
+    for (int xIndex=0; xIndex<nx; ++xIndex)
     {
-      colorMap->data()->cellToCoord(xIndex, yIndex, &x, &y);
+        for (int yIndex=0; yIndex<ny; ++yIndex)
+        {
+            colorMap->data()->cellToCoord(xIndex, yIndex, &x, &y);
 
-      z = dataSeries->itemAt(xIndex,yIndex)->y();
-      if (z>max){
-          max=z;
-      }
-      colorMap->data()->setCell(xIndex, yIndex, z);
+            z = dataSeries->itemAt(xIndex,yIndex)->y();
+            if (z>max){
+                max=z;
+            }
+            colorMap->data()->setCell(xIndex, yIndex, z);
+        }
     }
-  }
 
 
-  QCPColorScale *colorScale = new QCPColorScale(customPlot);
-  customPlot->plotLayout()->addElement(0, 1, colorScale);
-  colorScale->setType(QCPAxis::atRight);
-  colorMap->setColorScale(colorScale);
-  colorScale->axis()->setLabel("Deflection");
+    QCPColorScale *colorScale = new QCPColorScale(customPlot);
+    customPlot->plotLayout()->addElement(0, 1, colorScale);
+    colorScale->setType(QCPAxis::atRight);
+    colorMap->setColorScale(colorScale);
+    colorScale->axis()->setLabel("Deflection");
 
-  colorMap->setGradient(QCPColorGradient::gpPolar);
+    colorMap->setGradient(QCPColorGradient::gpPolar);
 
-  colorMap->rescaleDataRange();
+    colorMap->rescaleDataRange();
 
-  ui->rangeMaxSlider->setMaximum(max);
-  ui->rangeMaxSlider->setValue(max);
+    ui->rangeMaxSlider->setMaximum(max);
+    ui->rangeMaxSlider->setValue(max);
 
-  QCPMarginGroup *marginGroup = new QCPMarginGroup(customPlot);
-  customPlot->axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroup);
-  colorScale->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroup);
+    QCPMarginGroup *marginGroup = new QCPMarginGroup(customPlot);
+    customPlot->axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroup);
+    colorScale->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroup);
 
-  customPlot->rescaleAxes();
-  customPlot->xAxis->setScaleRatio(customPlot->yAxis,1);
+    customPlot->rescaleAxes();
+    customPlot->xAxis->setScaleRatio(customPlot->yAxis,1);
+}
+
+void intensitymap::on_save_pb_clicked()
+{
+    QString filepath = QFileDialog::getExistingDirectory();
+    QFile file(filepath+"/AFM_Scan_config_"+QDate::currentDate().toString()+"_"+QTime::currentTime().toString());
+    if(!filepath.isNull()){
+        if ( file.open(QIODevice::ReadWrite) )
+        {
+            QTextStream stream( &file );
+            stream << ui->textBrowser->toPlainText() << endl;
+            ui->intensityMap->saveBmp(filepath+"/AFM_Scan_image"+QDate::currentDate().toString()+"_"+QTime::currentTime().toString());
+        }
+        else{QMessageBox::critical(this, tr("Error"), "File Can't Be Opened");}
+    }
 }
 void intensitymap::setCutOff(int max){
     QCPRange range(0,max);
@@ -97,25 +103,9 @@ void intensitymap::setCutOff(int max){
 
 }
 
-
 void intensitymap::on_rangeMaxSlider_valueChanged(int value)
 {
     setCutOff(value);
-}
-
-void intensitymap::on_save_pb_clicked()
-{
-    QString filepath = QFileDialog::getExistingDirectory();
-    QFile file(filepath+"/AFM_Scan_config_"+QDate::currentDate().toString()+"_"+QTime::currentTime().toString());
-    if(!filepath.isNull()){
-    if ( file.open(QIODevice::ReadWrite) )
-    {
-        QTextStream stream( &file );
-        stream << ui->textBrowser->toPlainText() << endl;
-        ui->intensityMap->saveBmp(filepath+"/AFM_Scan_image"+QDate::currentDate().toString()+"_"+QTime::currentTime().toString());
-    }
-    else{QMessageBox::critical(this, tr("Error"), "File Can't Be Opened");}
-}
 }
 
 void intensitymap::on_colorPickDD_currentIndexChanged(int index)
@@ -148,6 +138,10 @@ void intensitymap::on_invertRB_toggled(bool checked)
 
 }
 
+intensitymap::~intensitymap()
+{
+    delete ui;
+}
 
 void intensitymap::on_interpolateRB_toggled(bool checked)
 {
