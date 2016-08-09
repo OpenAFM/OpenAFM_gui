@@ -3,13 +3,9 @@
 #include "tx_rx_protocol.h"
 #include "def_commands.h"
 #include "scannerwindow.h"
-
-
-
 #include <QMessageBox>
 #include <QDebug>
 #include <QLibraryInfo>
-
 #include <QtSerialPort/QSerialPort>
 #include <QSerialPortInfo>
 
@@ -106,15 +102,15 @@ void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
     }
     if(buffer==response::READY){
         qDebug()<<"RDY";
-       previous_response=response::READY;
+        previous_response=response::READY;
     }
     if(buffer==response::GO){
         qDebug()<<"response::GO";
-       previous_response=response::GO;
+        previous_response=response::GO;
     }
     if(buffer==response::DONE){
         qDebug()<<"response::DONE";
-       previous_response=response::DONE;
+        previous_response=response::DONE;
     }
 }
 
@@ -160,24 +156,24 @@ void MainWindow::openSerialPort()
     serial->setStopBits(QSerialPort::OneStop);
     serial->setFlowControl(QSerialPort::NoFlowControl);
     if (serial->open(QIODevice::ReadWrite)) {
-            ui->statusBar->showMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
-                                       .arg(ui->serialPortDropdown->currentText())
-                                       .arg(ui->baudDropDown->currentText().toInt())
-                                       .arg(QSerialPort::Data8)
-                                       .arg(QSerialPort::NoParity)
-                                       .arg(QSerialPort::OneStop)
-                                       .arg(QSerialPort::NoFlowControl));
-            ui->pushButton_connect->setText("Disconnect");
+        ui->statusBar->showMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
+                                   .arg(ui->serialPortDropdown->currentText())
+                                   .arg(ui->baudDropDown->currentText().toInt())
+                                   .arg(QSerialPort::Data8)
+                                   .arg(QSerialPort::NoParity)
+                                   .arg(QSerialPort::OneStop)
+                                   .arg(QSerialPort::NoFlowControl));
+        ui->pushButton_connect->setText("Disconnect");
 
-            ui->pushButton->setEnabled(true);
-            ui->calibration_PB->setEnabled(true);
-            ui->setup_pushButton->setEnabled(true);
+        ui->pushButton->setEnabled(true);
+        ui->calibration_PB->setEnabled(true);
+        ui->setup_pushButton->setEnabled(true);
 
-            const QSerialPortInfo info= QSerialPortInfo(*serial);
-            ui->label_deviceSignature->setText(info.manufacturer());
-            disconnect( ui->pushButton_connect, SIGNAL(clicked()),0, 0);
-            QObject::connect(ui->pushButton_connect, SIGNAL(clicked()),
-                             this, SLOT(closeSerialPort()));
+        const QSerialPortInfo info= QSerialPortInfo(*serial);
+        ui->label_deviceSignature->setText(info.manufacturer());
+        disconnect( ui->pushButton_connect, SIGNAL(clicked()),0, 0);
+        QObject::connect(ui->pushButton_connect, SIGNAL(clicked()),
+                         this, SLOT(closeSerialPort()));
 
     } else {
         QMessageBox::critical(this, tr("Error"), serial->errorString());
@@ -266,7 +262,7 @@ void MainWindow::handleError(QSerialPort::SerialPortError error)
 
 void MainWindow::on_pushButton_clicked()
 {
-     scannerwindow* Scanner= new scannerwindow(parameters, this, serial);
+    scannerwindow* Scanner= new scannerwindow(parameters, this, serial);
 }
 
 void MainWindow::on_pushButton_Send_clicked()
@@ -290,74 +286,74 @@ void MainWindow::on_lineEdit_Data_returnPressed()
 void MainWindow::setupStreaming(QCustomPlot *customPlot)
 {
 
-  customPlot->addGraph(); // blue line
+    customPlot->addGraph(); // blue line
 
-  customPlot->graph(0)->setPen(QPen(Qt::blue));
-  customPlot->graph(0)->setBrush(QBrush(QColor(240, 255, 200)));
-  customPlot->graph(0)->setAntialiasedFill(false);
+    customPlot->graph(0)->setPen(QPen(Qt::blue));
+    customPlot->graph(0)->setBrush(QBrush(QColor(240, 255, 200)));
+    customPlot->graph(0)->setAntialiasedFill(false);
 
-  customPlot->addGraph(); // blue dot
+    customPlot->addGraph(); // blue dot
 
-  customPlot->graph(1)->setPen(QPen(Qt::blue));
-  customPlot->graph(1)->setLineStyle(QCPGraph::lsNone);
-  customPlot->graph(1)->setScatterStyle(QCPScatterStyle::ssDisc);
-
-
-  customPlot->setInteractions(QCP::iRangeDrag);
-  customPlot->setInteractions(QCP::iRangeZoom);
+    customPlot->graph(1)->setPen(QPen(Qt::blue));
+    customPlot->graph(1)->setLineStyle(QCPGraph::lsNone);
+    customPlot->graph(1)->setScatterStyle(QCPScatterStyle::ssDisc);
 
 
-  customPlot->xAxis->setTickLabels(false);
-  customPlot->yAxis->setTickLabels(false);
+    customPlot->setInteractions(QCP::iRangeDrag);
+    customPlot->setInteractions(QCP::iRangeZoom);
 
 
-  customPlot->axisRect()->setRangeDrag(Qt::Vertical);
-  customPlot->axisRect()->setRangeZoom(Qt::Vertical);
+    customPlot->xAxis->setTickLabels(false);
+    customPlot->yAxis->setTickLabels(false);
 
-  customPlot->axisRect()->setupFullAxesBox(true);
-  customPlot->setBackground(this->palette().background().color());
+
+    customPlot->axisRect()->setRangeDrag(Qt::Vertical);
+    customPlot->axisRect()->setRangeZoom(Qt::Vertical);
+
+    customPlot->axisRect()->setupFullAxesBox(true);
+    customPlot->setBackground(this->palette().background().color());
 }
 
 void MainWindow::realtimeDataSlot(QByteArray data)
 {
 
     if(ui->calibration_PB->isChecked()){
-    int value0 = data[0];
+        int value0 = data[0];
 
-    double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
+        double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
 
-    // add data to line:
-    ui->customPlot->graph(0)->addData(key, value0);
-    // set data of dot:
-    ui->customPlot->graph(1)->clearData();
-    ui->customPlot->graph(1)->addData(key, value0);
-    // remove data of lines that's outside visible range:
-    ui->customPlot->graph(0)->removeDataBefore(key-15);
+        // add data to line:
+        ui->customPlot->graph(0)->addData(key, value0);
+        // set data of dot:
+        ui->customPlot->graph(1)->clearData();
+        ui->customPlot->graph(1)->addData(key, value0);
+        // remove data of lines that's outside visible range:
+        ui->customPlot->graph(0)->removeDataBefore(key-15);
 
-    // rescale value (vertical) axis to fit the current data:
-    ui->customPlot->yAxis->rescale(true);
-    ui->customPlot->xAxis->setRange(key+1, 16, Qt::AlignRight);
-    //ui->customPlot->graph(0)->rescaleValueAxis();
-    //ui->customPlot->graph(1)->rescaleValueAxis();
+        // rescale value (vertical) axis to fit the current data:
+        ui->customPlot->yAxis->rescale(true);
+        ui->customPlot->xAxis->setRange(key+1, 16, Qt::AlignRight);
+        //ui->customPlot->graph(0)->rescaleValueAxis();
+        //ui->customPlot->graph(1)->rescaleValueAxis();
 
-    ui->customPlot->replot();
+        ui->customPlot->replot();
 
-    putChar(response::READY);
+        putChar(response::READY);
 
-}
+    }
 
 }
 
 void MainWindow::on_calibration_PB_toggled(bool checked)
 {
     if(checked){
-    ui->calibration_PB->setText("Done");
-    sendData(response::STREAM);
-    sendData(response::READY);
+        ui->calibration_PB->setText("Done");
+        sendData(response::STREAM);
+        sendData(response::READY);
     }
     else{
-     ui->calibration_PB->setText("Calibrate");
-     sendData(response::DONE);
+        ui->calibration_PB->setText("Calibrate");
+        sendData(response::DONE);
     }
 }
 
@@ -384,17 +380,17 @@ void MainWindow::on_LoadScan_clicked()
 {
     QString filepath = QFileDialog::getOpenFileName();
     QFile file(filepath);
-if(!filepath.isNull()){
-    if(file.open(QIODevice::ReadWrite)){
+    if(!filepath.isNull()){
+        if(file.open(QIODevice::ReadWrite)){
 
-    stream=new QTextStream(&file);
-    scannerwindow* Scanner= new scannerwindow(parameters, this, serial,true,stream);
+            stream=new QTextStream(&file);
+            scannerwindow* Scanner= new scannerwindow(parameters, this, serial,true,stream);
 
+        }
+
+        else{
+            QMessageBox::critical(this, tr("Error"), "File Can't Be Opened");
+
+        }
     }
-
-    else{
-        QMessageBox::critical(this, tr("Error"), "File Can't Be Opened");
-
-    }
-}
 }

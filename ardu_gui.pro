@@ -17,7 +17,7 @@ SOURCES += main.cpp\
         surfacegraph.cpp \
         scannerwindow.cpp \
         qcustomplot.cpp \
-    intensitymap.cpp
+        intensitymap.cpp
 
 
 HEADERS  += mainwindow.h \

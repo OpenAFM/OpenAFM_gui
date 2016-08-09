@@ -8,7 +8,8 @@ intensitymap::intensitymap(QSurfaceDataProxy* Series, QList <int> parameters,QWi
     ui->setupUi(this);
     dataSeries=Series;
     setupIntensityMap(ui->intensityMap);
-    //    parameters={lineLength, stepSize, sampleSize};
+
+    //parameters={lineLength, stepSize, sampleSize};
 
     ui->textBrowser->append("####AFM SCAN###\n");
 

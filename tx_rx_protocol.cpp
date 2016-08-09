@@ -1,10 +1,7 @@
 #include "TX_RX_PROTOCOL.h"
 #include <QDebug>
 
-
 TX_RX_qt* TX_RX_qt::m_Instance = 0;
-
-
 
 void TX_RX_qt::charReceiver(QByteArray dataArray)
 {
@@ -22,7 +19,7 @@ void TX_RX_qt::charReceiver(QByteArray dataArray)
             QByteArray valid_frame;
             for(int i=0;i<frame_position;++i){
 
-            valid_frame[i]=receive_frame_buffer[i];
+                valid_frame[i]=receive_frame_buffer[i];
 
             }
             receive_frame_buffer.remove(0,frame_position);
@@ -31,9 +28,7 @@ void TX_RX_qt::charReceiver(QByteArray dataArray)
             frame_position = 0;
             continue;
         }
-
-
-  }
+    }
 }
 
 
