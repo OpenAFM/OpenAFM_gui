@@ -409,7 +409,6 @@ void scannerwindow::initializeBitmapCombined(QCustomPlot* customPlot){
 
     customPlot->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom);
     customPlot->axisRect()->setupFullAxesBox(true);
-    customPlot->setBackground(Qt::transparent);
 
 
     colorMapCombined = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
