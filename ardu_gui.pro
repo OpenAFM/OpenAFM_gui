@@ -29,9 +29,6 @@ HEADERS  += mainwindow.h \
         intensitymap.h
 
 
-#LIBS += -framework QtCore
-
-
 FORMS    += mainwindow.ui \
             intensitymap.ui \
 
