@@ -230,6 +230,22 @@ void MainWindow::sendData(QByteArray data) {
     emit sendDataFrame(data, length);
 }
 
+void MainWindow::sendReady(){
+    qDebug()<<"received sig";
+    serial->write(response::READY);
+
+}
+
+void MainWindow::sendGo(){
+    qDebug()<<"received sig";
+    serial->write(response::GO);
+}
+
+void MainWindow::sendDone(){
+    qDebug()<<"received sig";
+    serial->write(response::DONE);
+}
+
 void MainWindow::setStatusbarText(const QString& text) {
     ui->statusBar->showMessage(text);
 }
@@ -262,7 +278,7 @@ void MainWindow::handleError(QSerialPort::SerialPortError error)
 
 void MainWindow::on_pushButton_clicked()
 {
-    scannerwindow* Scanner= new scannerwindow(parameters, this, serial);
+    scannerwindow* Scanner= new scannerwindow(parameters, this);
 }
 
 void MainWindow::on_pushButton_Send_clicked()
@@ -384,7 +400,7 @@ void MainWindow::on_LoadScan_clicked()
         if(file.open(QIODevice::ReadWrite)){
 
             stream=new QTextStream(&file);
-            scannerwindow* Scanner= new scannerwindow(parameters, this, serial,true,stream);
+            scannerwindow* Scanner= new scannerwindow(parameters, this ,true,stream);
 
         }
 

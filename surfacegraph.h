@@ -18,7 +18,7 @@ class SurfaceGraph : public QObject
 {
     Q_OBJECT
 public:
-    explicit SurfaceGraph(Q3DSurface *surface, QSerialPort *serial, QWidget *main,QList<int>);
+    explicit SurfaceGraph(Q3DSurface *surface, QWidget *main,QList<int>);
     ~SurfaceGraph();
 
 
@@ -55,13 +55,12 @@ public:
 
 signals:
     void fillBitmap(QList <QByteArray>);
+    void sendReady();
+
 
 public Q_SLOTS:
 
     void enableAFMModel();
-    void sendReady();
-    void sendGo();
-    void sendDone();
     void changeTheme(int theme);
     void fillAFMProxy(QList<QByteArray> data,bool load=0, QTextStream* stream=nullptr);
     void dataHandler(QByteArray);

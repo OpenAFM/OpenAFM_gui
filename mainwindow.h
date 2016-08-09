@@ -25,8 +25,11 @@ public:
     int sampleSize;
     QList<int> parameters;
     QTextStream* stream;
-public slots:
 
+public slots:
+    void sendGo();
+    void sendDone();
+    void sendReady();
     void putChar(QByteArray data);
     void putChar(char data);
     void phone_CommandRouter(QByteArray buffer, quint16 bytes_received);
@@ -59,7 +62,6 @@ private slots:
     void openSerialPort();
     void closeSerialPort();
     void writeData(const QByteArray &data);
-
     void displayIncoming(QByteArray data,quint16 no_of_bytes);
 
     void readData();

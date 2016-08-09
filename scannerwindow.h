@@ -38,7 +38,7 @@ class scannerwindow :public QObject
     Q_OBJECT
 
 public:
-    explicit scannerwindow(QList<int>, QMainWindow *parent = 0, QSerialPort *serial=0,bool load=0, QTextStream* stream=nullptr);
+    explicit scannerwindow(QList<int>, QMainWindow *parent = 0,bool load=0, QTextStream* stream=nullptr);
     ~scannerwindow();
     QWidget* widget;
     Q3DSurface *graph;

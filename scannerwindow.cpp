@@ -7,7 +7,7 @@
 
 
 
-scannerwindow::scannerwindow(QList<int> parameters, QMainWindow *parent, QSerialPort *serial, bool load, QTextStream* stream):
+scannerwindow::scannerwindow(QList<int> parameters, QMainWindow *parent, bool load, QTextStream* stream):
     QObject(parent)
 {
     this->parameters=parameters;
@@ -219,7 +219,7 @@ if(!load){
 
     widget->show();
 
-    modifier= new SurfaceGraph(graph, serial, widget,parameters);
+    modifier= new SurfaceGraph(graph, widget,parameters);
 
 
 if(!load){
@@ -230,22 +230,17 @@ if(!load){
     QObject::connect(AFM_Scan_3D_RB, SIGNAL (toggled(bool)),
                      this, SLOT(AFMButtonHandler(bool)));
 
-
     QObject::connect(this, SIGNAL (AFMStart()),
                      modifier, SLOT (enableAFMModel()));
 
-
     QObject::connect(this, SIGNAL (AFMDone()),
-                     modifier, SLOT (sendDone()));
-
-
-    QObject::connect(this, SIGNAL (AFMStart()),
-                     modifier, SLOT (sendGo()));
+                     parent, SLOT (sendDone()));
 
     QObject::connect(this, SIGNAL (AFMStart()),
-                     modifier, SLOT(sendReady()));
-}
+                     parent, SLOT (sendGo()));
 
+    QObject::connect(this, SIGNAL (AFMStart()),
+                     parent, SLOT(sendReady()));}
 
     QObject::connect(widget,SIGNAL(destroyed()),
                      this, SLOT(close()));
@@ -254,7 +249,7 @@ if(!load){
                      this, SLOT(endScan()));
 
     QObject::connect(widget,SIGNAL(destroyed()),
-                     modifier, SLOT(sendDone()));
+                     parent, SLOT(sendDone()));
 
     QObject::connect(SaveSurface, SIGNAL (clicked()),
                      modifier, SLOT(saveData()));
@@ -287,6 +282,9 @@ if(!load){
 
     QObject::connect(modifier, SIGNAL (fillBitmap(QList <QByteArray>)),
                      this, SLOT (realtimeDataSlotUpdate(QList<QByteArray>)));
+
+    QObject::connect(modifier, SIGNAL (sendReady()),
+                     parent, SLOT (sendReady()));
 
 
     QObject::connect(bitmapForward, SIGNAL(customContextMenuRequested(const QPoint &)),

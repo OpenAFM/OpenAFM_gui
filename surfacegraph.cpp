@@ -14,7 +14,7 @@
 using namespace QtDataVisualization;
 
 
-SurfaceGraph::SurfaceGraph(Q3DSurface *surface, QSerialPort *serial, QWidget *parent,QList<int> parameters)
+SurfaceGraph::SurfaceGraph(Q3DSurface *surface, QWidget *parent,QList<int> parameters)
     :QObject(parent)
 {
     this->parameters=parameters;
@@ -31,7 +31,6 @@ SurfaceGraph::SurfaceGraph(Q3DSurface *surface, QSerialPort *serial, QWidget *pa
 
     m_graph->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);
 
-    data_serial=serial;       
 }
 
 
@@ -106,7 +105,7 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data, bool load, QTextStream 
 
             AFM_Proxy->insertRow(AFM_Proxy->rowCount(),newRow);
             qDebug()<<QTime::currentTime();
-            sendReady();
+            emit sendReady();
         }
         else emit scanFinished();
     }
@@ -161,17 +160,6 @@ void SurfaceGraph::saveData(){
     }
 }
 
-void SurfaceGraph::sendGo(){
-    this->data_serial->write(response::GO);
-}
-
-void SurfaceGraph::sendReady(){
-    this->data_serial->write(response::READY);
-}
-
-void SurfaceGraph::sendDone(){
-    this->data_serial->write(response::DONE);
-}
 
 void SurfaceGraph::adjustCameraZ(int angle)
 {
