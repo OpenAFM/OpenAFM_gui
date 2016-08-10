@@ -4,6 +4,7 @@
 #include <QtCore/QtGlobal>
 #include <QObject>
 #include <QtSerialPort/QtSerialPort>
+#include "tx_rx_protocol.h"
 
 class afmdevice : public QObject
 {
@@ -13,6 +14,9 @@ private:
     // serial port
     QSerialPort *serialPort;
     QSerialPortInfo *serialPortInfo;
+    TX_RX_qt* phone;
+    QMutex commsMutex;
+    bool m_isConnected = false;
 
     // COMs configuration
     QString portName = "";
@@ -22,24 +26,86 @@ private:
     QSerialPort::StopBits stopBits = QSerialPort::OneStop;
     QSerialPort::FlowControl flowControl = QSerialPort::NoFlowControl;
 
-    int sendData(QByteArray string);
+    // handlers
+    void handleError(QSerialPort::SerialPortError error);
 
 public:
+
+    explicit afmdevice();
 
     /*
      * Connect the serial port using the internal configuration.
      * portName - the name of the serial port (e.g. "COM1")
      * baudRate - the serial baud rate
-     * Return 0 if successfull, 1 otherwise.
+     * Return 0 if successfull, 1 if failed, 2 if already connected.
      * If successfull, serialPortInfo is populated.
      */
-    int connect(QString portName, int baudRate);
+    int connectPort(QString portName, int baudRate);
 
     /*
      * Disconnect the serial port.
      * Return 0 if successfull.
      */
-    int disconnect();
+    int disconnectPort();
+
+    /*
+     * Write a byte array to the device.
+     * Returns the number of bytes written.
+     * Locks commsMutex.
+     */
+    qint64 write(const QByteArray &data);
+
+    /*
+     * Write a string to the device.
+     * Returns the number of bytes written.
+     * Locks commsMutex.
+     */
+    qint64 write(const QString &data);
+
+    /*
+     * Reads all data from the serial port.
+     * Returns an array of Bytes read from the port.
+     * Locks commsMutex.
+     */
+    QByteArray readAllData();
+
+    /*
+     * Read a line from the serial port (read everything up until the new line separator).
+     * Returns the line read.
+     * Locks commsMutex;
+     */
+    QByteArray readLine();
+
+    /*
+     * Get a list of ports on the machine.
+     * Returns the list.
+     */
+    QList<QSerialPortInfo> getSerialPorts();
+
+    /*
+     * Is the serial port connected?
+     */
+    bool isConnected() { return m_isConnected; }
+
+    void sendReady();
+    void sendGo();
+    void sendDone();
+
+    /*
+     * Sets up a scan.
+     * Send the start signal followed by the stepSize, lineLength and sampleSize.
+     */
+    void setup(int stepSize, int lineLength, int sampleSize);
+
+
+signals:
+    void sendDataFrame(QByteArray buffer, quint16 size);
+    void dataReceived(QByteArray data);
+    void plotDataReceived(QByteArray data);
+    void dataSent(QByteArray);
+    void readReady();
+    void plotData(QList<QByteArray>);
+    void scan_starting();
 };
 
 #endif // AFMDEVICE_H
