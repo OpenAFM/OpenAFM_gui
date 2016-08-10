@@ -17,7 +17,8 @@ SOURCES += main.cpp\
         surfacegraph.cpp \
         scannerwindow.cpp \
         qcustomplot.cpp \
-        intensitymap.cpp
+        intensitymap.cpp \
+    afmdevice.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -26,7 +27,8 @@ HEADERS  += mainwindow.h \
         surfacegraph.h \
         scannerwindow.h \
         qcustomplot.h \
-        intensitymap.h
+        intensitymap.h \
+    afmdevice.h
 
 
 FORMS    += mainwindow.ui \
