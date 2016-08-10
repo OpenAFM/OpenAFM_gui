@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QtSerialPort/QtSerialPort>
 #include "qcustomplot.h"
+#include "afmdevice.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +26,7 @@ public:
     int sampleSize;
     QList<int> parameters;
     QTextStream* stream;
+    afmdevice *device;
 
 public slots:
     void sendGo();

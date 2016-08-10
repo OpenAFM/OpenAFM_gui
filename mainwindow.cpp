@@ -3,6 +3,7 @@
 #include "tx_rx_protocol.h"
 #include "def_commands.h"
 #include "scannerwindow.h"
+#include "afmdevice.h"
 #include <QMessageBox>
 #include <QDebug>
 #include <QLibraryInfo>
@@ -20,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->statusBar->showMessage("Qt to Arduino phone  example", 3000);
     serial = new QSerialPort(this);
+
+    device = new afmdevice();
     this->fillPortsInfo();
     TX_RX_qt* phone = TX_RX_qt::instance();
     phone->receive_frame_buffer.reserve(10000);
