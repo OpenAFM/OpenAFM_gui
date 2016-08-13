@@ -7,7 +7,7 @@
 #include <QtCore/QStringBuilder>
 
 
-afmdevice::afmdevice() : QObject()
+afmdevice::afmdevice(QObject *parent = 0) : QObject(parent)
 {
     serialPort = new QSerialPort(this);
     phone = TX_RX_qt::instance();

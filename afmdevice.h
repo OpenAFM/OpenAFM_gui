@@ -31,7 +31,7 @@ private:
 
 public:
 
-    explicit afmdevice();
+    explicit afmdevice(QObject *parent = 0);
 
     /*
      * Connect the serial port using the internal configuration.
@@ -69,12 +69,13 @@ public:
      */
     QByteArray readAllData();
 
-    /*
+    /*!
      * Read a line from the serial port (read everything up until the new line separator).
-     * Returns the line read.
+     * Blocks until a line is read, or the timeout period of \a timeOut milliseconds elapses.
+     * \returns the line read.
      * Locks commsMutex;
      */
-    QByteArray readLine();
+    QByteArray readLine(int timeOut);
 
     /*
      * Get a list of ports on the machine.
@@ -87,7 +88,14 @@ public:
      */
     bool isConnected() { return m_isConnected; }
 
+    /*
+     * Send the Ready command to the device.
+     */
     void sendReady();
+
+    /*
+     * Send the Go signal to the device
+     */
     void sendGo();
     void sendDone();
 
