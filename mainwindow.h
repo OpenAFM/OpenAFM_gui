@@ -68,7 +68,7 @@ private slots:
     void sendData(QByteArray data);
     void handleError(QSerialPort::SerialPortError error);
     void print_hex_value(QByteArray data);
-    void on_pushButton_clicked();
+    void on_scanPB_clicked();
     void on_pushButton_Send_clicked();
     void on_pushButton_2_pressed();
     void on_lineEdit_Data_returnPressed();

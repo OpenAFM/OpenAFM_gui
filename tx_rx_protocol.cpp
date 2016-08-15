@@ -11,6 +11,7 @@ void TX_RX_qt::charReceiver(QByteArray dataArray)
     for(QByteArray::iterator it = dataArray.begin(); it != dataArray.end(); it++) {
 
         data = (*it);
+
         receive_frame_buffer[frame_position] = data;
         frame_position++;
 

@@ -79,7 +79,7 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data, bool load, QTextStream 
     if(!load){
 
         float stepX = parameters[1];
-
+        qDebug()<<data;
         if(!size_set){
             int line_size=data.size()/2;
             sampleCountX=line_size;
@@ -133,7 +133,7 @@ void SurfaceGraph::enableAFMModel()
 
 void SurfaceGraph::dataHandler(QByteArray data){
 
-        data.replace(";","");
+        //data.replace(";","");
         QList <QByteArray> splitData=data.split(',');
         fillAFMProxy(splitData);
         emit fillBitmap(splitData);

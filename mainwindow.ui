@@ -187,7 +187,7 @@
      <attribute name="label">
       <string>Scan</string>
      </attribute>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>19</x>
@@ -211,7 +211,6 @@
          <property name="autoFillBackground">
           <bool>false</bool>
          </property>
-         <zorder>layoutWidget</zorder>
         </widget>
        </item>
        <item>
@@ -340,7 +339,7 @@
           </widget>
          </item>
          <item row="4" column="0">
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="scanPB">
            <property name="text">
             <string>Start Scan</string>
            </property>

@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(this, SIGNAL(plotDataReceived(QByteArray)), this, SLOT(realtimeDataSlot(QByteArray)));
 
-    ui->pushButton->setEnabled(false);
+    ui->scanPB->setEnabled(false);
     ui->calibration_PB->setEnabled(false);
     ui->setup_pushButton->setEnabled(false);
 
@@ -97,20 +97,22 @@ void MainWindow::putChar(char data)
 
 void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
 {
-    if(previous_response==response::READY && buffer!=response::READY){
-        emit plotDataReceived(buffer);
-    }
+
     if(buffer==response::READY){
         qDebug()<<"RDY";
         previous_response=response::READY;
     }
-    if(buffer==response::GO){
+    else if(buffer==response::GO){
         qDebug()<<"response::GO";
         previous_response=response::GO;
     }
-    if(buffer==response::DONE){
+    else if(buffer==response::DONE){
         qDebug()<<"response::DONE";
         previous_response=response::DONE;
+    }
+    else if(previous_response==response::READY && buffer!=response::READY){
+        buffer.remove(buffer.size()-1,1);
+        emit plotDataReceived(buffer);
     }
 }
 
@@ -165,7 +167,7 @@ void MainWindow::openSerialPort()
                                    .arg(QSerialPort::NoFlowControl));
         ui->pushButton_connect->setText("Disconnect");
 
-        ui->pushButton->setEnabled(true);
+        ui->scanPB->setEnabled(true);
         ui->calibration_PB->setEnabled(true);
         ui->setup_pushButton->setEnabled(true);
 
@@ -189,7 +191,7 @@ void MainWindow::closeSerialPort()
     QObject::connect(ui->pushButton_connect, SIGNAL(clicked()),
                      this, SLOT(openSerialPort()));
     ui->pushButton_connect->setText("Connect");
-    ui->pushButton->setEnabled(false);
+    ui->scanPB->setEnabled(false);
     ui->calibration_PB->setEnabled(false);
     ui->setup_pushButton->setEnabled(false);
 
@@ -276,9 +278,19 @@ void MainWindow::handleError(QSerialPort::SerialPortError error)
 /* Button Slot functions */
 
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_scanPB_clicked()
 {
     scannerwindow* Scanner= new scannerwindow(parameters, this);
+    ui->scanPB->setEnabled(false);
+    ui->scanPB->setText("Scanning");
+    ui->scanPB->setStyleSheet("QPushButton {color:white;}");
+
+
+    connect(Scanner, &QObject::destroyed, [=](){
+        ui->scanPB->setChecked(false);
+        ui->scanPB->setEnabled(true);
+        ui->scanPB->setStyleSheet("QPushButton {color:black;}");
+    });
 }
 
 void MainWindow::on_pushButton_Send_clicked()
@@ -320,21 +332,29 @@ void MainWindow::setupStreaming(QCustomPlot *customPlot)
 
 
     customPlot->xAxis->setTickLabels(false);
-    customPlot->yAxis->setTickLabels(false);
+    customPlot->yAxis->setTickLabels(true);
 
 
     customPlot->axisRect()->setRangeDrag(Qt::Vertical);
     customPlot->axisRect()->setRangeZoom(Qt::Vertical);
 
     customPlot->axisRect()->setupFullAxesBox(true);
+    connect(customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->xAxis2, SLOT(setRange(QCPRange)));
+    connect(customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->yAxis2, SLOT(setRange(QCPRange)));
+
     customPlot->setBackground(this->palette().background().color());
+
+    connect(customPlot->yAxis, static_cast<void (QCPAxis::*)(const QCPRange&)>(&QCPAxis::rangeChanged), [=](const QCPRange &  newRange) {
+            if(newRange.lower < 0) customPlot->yAxis->setRangeLower(0);
+        });
 }
 
 void MainWindow::realtimeDataSlot(QByteArray data)
 {
 
     if(ui->calibration_PB->isChecked()){
-        int value0 = data[0];
+
+        int value0 =data.toInt();
 
         double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
 
@@ -347,9 +367,7 @@ void MainWindow::realtimeDataSlot(QByteArray data)
         ui->customPlot->graph(0)->removeDataBefore(key-15);
 
         // rescale value (vertical) axis to fit the current data:
-        ui->customPlot->yAxis->rescale(true);
         ui->customPlot->xAxis->setRange(key+1, 16, Qt::AlignRight);
-        //ui->customPlot->graph(0)->rescaleValueAxis();
         //ui->customPlot->graph(1)->rescaleValueAxis();
 
         ui->customPlot->replot();
@@ -363,7 +381,7 @@ void MainWindow::realtimeDataSlot(QByteArray data)
 void MainWindow::on_calibration_PB_toggled(bool checked)
 {
     if(checked){
-        ui->calibration_PB->setText("Done");
+        ui->calibration_PB->setText("End");
         sendData(response::STREAM);
         sendData(response::READY);
     }
