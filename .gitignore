@@ -38,3 +38,8 @@ CMakeLists.txt.user*
 
 #Ignore folder mac
 .DS_Store
+afmdevice_BASE_22176.cpp
+
+afmdevice_LOCAL_22176.cpp
+
+afmdevice_REMOTE_22176.cpp
