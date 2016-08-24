@@ -35,6 +35,8 @@ private slots:
 
     void on_interpolateRB_toggled(bool checked);
 
+    void on_quit_pb_clicked();
+
 private:
     QGraphicsScene *scene;
     QPixmap PixMap;

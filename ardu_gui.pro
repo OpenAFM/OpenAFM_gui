@@ -7,9 +7,8 @@
 QT       += datavisualization core gui serialport
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
-TARGET = qt_ardu
+TARGET = openAFM
 TEMPLATE = app
-
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -34,5 +33,6 @@ FORMS    += mainwindow.ui \
 
 
 QMAKE_LFLAGS  += -Wl,-rpath,@executable_path/../Frameworks \
-                 -Wl,-rpath,@executable_path/../PlugIns
+                 -Wl,-rpath,@executable_path/../PlugIns \
+                 -Wl,-rpath,@executable_path/../Resources
 

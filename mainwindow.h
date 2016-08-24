@@ -39,17 +39,16 @@ public slots:
 
 signals:
     void sendDataFrame(QByteArray buffer, quint16 size);
-    void dataReceived(QByteArray data);
-    void plotDataReceived(QByteArray data);
+    void dataReceived(QByteArray buffer);
+    void plotDataReceived(QList <QByteArray> buffer);
     void dataSent(QByteArray);
     void plotData(QList<QByteArray>);
     void scan_starting();
 
 private:
-    QTimer dataTimer;
-    int previouskey=0;
-    void loadParameters();
 
+    QTimer dataTimer;
+    void loadParameters();
     Ui::MainWindow *ui;
     void fillPortsInfo();
     QSerialPort *serial;
@@ -72,7 +71,7 @@ private slots:
     void on_pushButton_Send_clicked();
     void on_pushButton_2_pressed();
     void on_lineEdit_Data_returnPressed();
-    void realtimeDataSlot(QByteArray);
+    void realtimeDataSlot(QList<QByteArray>);
 
     void on_calibration_PB_toggled(bool checked);
     void on_setup_pushButton_clicked();

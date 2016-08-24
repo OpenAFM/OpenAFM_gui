@@ -63,7 +63,7 @@ public Q_SLOTS:
     void enableAFMModel();
     void changeTheme(int theme);
     void fillAFMProxy(QList<QByteArray> data,bool load=0, QTextStream* stream=nullptr);
-    void dataHandler(QByteArray);
+    void dataHandler(QList <QByteArray>);
     void saveData();
 
 private:

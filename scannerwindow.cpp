@@ -96,20 +96,25 @@ if(!load){
     AFM_Scan_3D_RB->setText(QStringLiteral("Start Scan"));
     AFM_Scan_3D_RB->setCheckable(true);
     AFM_Scan_3D_RB->setChecked(false);
+
+
+
 }
+     SaveSurface = new QPushButton(widget);
+     SaveSurface->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+     SaveSurface->setText(QStringLiteral("Save Data"));
 
     BitmapView = new QPushButton(widget);
     BitmapView->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     BitmapView->setText(QStringLiteral("Save BMP"));
 
-    SaveSurface = new QPushButton(widget);
-    SaveSurface->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    SaveSurface->setText(QStringLiteral("Save Data"));
-
 
     QVBoxLayout *modelVBox = new QVBoxLayout;
 
-   if(!load){ modelVBox->addWidget(AFM_Scan_3D_RB);}
+   if(!load){
+       modelVBox->addWidget(AFM_Scan_3D_RB);
+   }
+
     modelVBox->addWidget(BitmapView);
     modelVBox->addWidget(SaveSurface);
     modelGroupBox->setLayout(modelVBox);
@@ -224,8 +229,8 @@ if(!load){
 
 if(!load){
 
-    QObject::connect(parent, SIGNAL(plotDataReceived(QByteArray)),
-                     modifier, SLOT(dataHandler(QByteArray)));
+    QObject::connect(parent, SIGNAL(plotDataReceived(QList <QByteArray>)),
+                     modifier, SLOT(dataHandler(QList <QByteArray>)));
 
     QObject::connect(AFM_Scan_3D_RB, SIGNAL (toggled(bool)),
                      this, SLOT(AFMButtonHandler(bool)));
@@ -280,7 +285,7 @@ if(!load){
     QObject::connect(axisCameraSliderY, &QSlider::valueChanged,
                      modifier, &SurfaceGraph::adjustCameraY);
 
-    QObject::connect(modifier, SIGNAL (fillBitmap(QList <QByteArray>)),
+    QObject::connect(parent, SIGNAL (plotDataReceived(QList <QByteArray>)),
                      this, SLOT (realtimeDataSlotUpdate(QList<QByteArray>)));
 
     QObject::connect(modifier, SIGNAL (sendReady()),

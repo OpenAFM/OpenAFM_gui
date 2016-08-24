@@ -55,12 +55,12 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data, bool load, QTextStream 
             for(int i=0;i<sampleCountX;++i){
                 *stream>>temp;
 
-
                 vect.setX(temp);
                 *stream>>temp;
 
                 vect.setY(temp);
                 *stream>>temp;
+
                 if(temp==0){
                     addingData=false;
                     break;
@@ -131,20 +131,23 @@ void SurfaceGraph::enableAFMModel()
         m_graph->addSeries(AFM_Series);
 }
 
-void SurfaceGraph::dataHandler(QByteArray data){
+void SurfaceGraph::dataHandler(QList <QByteArray> data){
 
-        //data.replace(";","");
-        QList <QByteArray> splitData=data.split(',');
-        fillAFMProxy(splitData);
-        emit fillBitmap(splitData);
+        fillAFMProxy(data);
 }
 
 void SurfaceGraph::saveData(){
+    QString date=QDate::currentDate().toString();
+    QString time=QTime::currentTime().toString();
 
-
-    QString filepath = QFileDialog::getExistingDirectory();
+    QString filepath = QFileDialog::getExistingDirectory(NULL, "Choose save path", "../../",QFileDialog::ShowDirsOnly);
     if (!filepath.isNull()){
-    QFile file(filepath+"/AFM_Scan_data_"+ QDate::currentDate().toString()+"_"+QTime::currentTime().toString());
+     QDir dir(filepath+"/"+date+"AFM Scan");
+        if (!dir.exists()) {
+            dir.mkpath(".");
+        }
+
+    QFile file(dir.path()+"/AFM_Scan_surface_"+QTime::currentTime().toString());
     if ( file.open(QIODevice::ReadWrite) )
     {
         QTextStream stream( &file );

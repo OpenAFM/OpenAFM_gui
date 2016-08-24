@@ -8,9 +8,9 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
 
-    a.setApplicationName("Arduguino 0.1");
-    a.setApplicationDisplayName("Arduguino 0.1");
-    a.setApplicationVersion("0.1");
+    a.setApplicationName("OpenAFM 0.7");
+    a.setApplicationDisplayName("OpenAFM 0.7");
+    a.setApplicationVersion("0.7");
     w.show();
     return a.exec();
 }

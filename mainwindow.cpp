@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     ui->setupUi(this);
-    ui->statusBar->showMessage("Qt to Arduino phone  example", 3000);
+    ui->statusBar->showMessage("openAFM Interface", 3000);
     serial = new QSerialPort(this);
     this->fillPortsInfo();
     TX_RX_qt* phone = TX_RX_qt::instance();
@@ -52,16 +52,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(serial, SIGNAL(readyRead()),
                      this, SLOT(readData()));
 
-
-
-
-
-    QObject::connect(this, SIGNAL(plotDataReceived(QByteArray)), this, SLOT(realtimeDataSlot(QByteArray)));
+    QObject::connect(this, SIGNAL(plotDataReceived(QList <QByteArray>)), this, SLOT(realtimeDataSlot(QList <QByteArray>)));
 
     ui->scanPB->setEnabled(false);
     ui->calibration_PB->setEnabled(false);
     ui->setup_pushButton->setEnabled(false);
-
+    ui->pushButton_Send->setEnabled(false);
     loadParameters();
     qDebug()<<parameters[0];
     setupStreaming(ui->customPlot);
@@ -112,7 +108,8 @@ void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
     }
     else if(previous_response==response::READY && buffer!=response::READY){
         buffer.remove(buffer.size()-1,1);
-        emit plotDataReceived(buffer);
+        QList <QByteArray> splitData=buffer.split(',');
+        emit plotDataReceived(splitData);
     }
 }
 
@@ -158,21 +155,34 @@ void MainWindow::openSerialPort()
     serial->setStopBits(QSerialPort::OneStop);
     serial->setFlowControl(QSerialPort::NoFlowControl);
     if (serial->open(QIODevice::ReadWrite)) {
-        ui->statusBar->showMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
-                                   .arg(ui->serialPortDropdown->currentText())
-                                   .arg(ui->baudDropDown->currentText().toInt())
-                                   .arg(QSerialPort::Data8)
-                                   .arg(QSerialPort::NoParity)
-                                   .arg(QSerialPort::OneStop)
-                                   .arg(QSerialPort::NoFlowControl));
-        ui->pushButton_connect->setText("Disconnect");
-
-        ui->scanPB->setEnabled(true);
-        ui->calibration_PB->setEnabled(true);
-        ui->setup_pushButton->setEnabled(true);
 
         const QSerialPortInfo info= QSerialPortInfo(*serial);
+
+        ui->pushButton_connect->setText("Disconnect");
+
+        ui->statusBar->showMessage(tr("Connecting to %1")
+                                   .arg(ui->serialPortDropdown->currentText()));
+
+
+
+        QTimer::singleShot(2000, [=](){
+            ui->statusBar->showMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
+                                       .arg(ui->serialPortDropdown->currentText())
+                                       .arg(ui->baudDropDown->currentText().toInt())
+                                       .arg(QSerialPort::Data8)
+                                       .arg(QSerialPort::NoParity)
+                                       .arg(QSerialPort::OneStop)
+                                       .arg(QSerialPort::NoFlowControl));
+            ui->scanPB->setEnabled(true);
+            ui->calibration_PB->setEnabled(true);
+            ui->setup_pushButton->setEnabled(true);
+            ui->pushButton_Send->setEnabled(true);
+
+        });
+
+
         ui->label_deviceSignature->setText(info.manufacturer());
+
         disconnect( ui->pushButton_connect, SIGNAL(clicked()),0, 0);
         QObject::connect(ui->pushButton_connect, SIGNAL(clicked()),
                          this, SLOT(closeSerialPort()));
@@ -289,6 +299,7 @@ void MainWindow::on_scanPB_clicked()
     connect(Scanner, &QObject::destroyed, [=](){
         ui->scanPB->setChecked(false);
         ui->scanPB->setEnabled(true);
+        ui->scanPB->setText("Start Scan");
         ui->scanPB->setStyleSheet("QPushButton {color:black;}");
     });
 }
@@ -329,7 +340,7 @@ void MainWindow::setupStreaming(QCustomPlot *customPlot)
 
     customPlot->setInteractions(QCP::iRangeDrag);
     customPlot->setInteractions(QCP::iRangeZoom);
-
+    customPlot->axisRect()->setRangeDragAxes(customPlot->xAxis,customPlot->yAxis);
 
     customPlot->xAxis->setTickLabels(false);
     customPlot->yAxis->setTickLabels(true);
@@ -339,6 +350,7 @@ void MainWindow::setupStreaming(QCustomPlot *customPlot)
     customPlot->axisRect()->setRangeZoom(Qt::Vertical);
 
     customPlot->axisRect()->setupFullAxesBox(true);
+
     connect(customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->xAxis2, SLOT(setRange(QCPRange)));
     connect(customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->yAxis2, SLOT(setRange(QCPRange)));
 
@@ -349,12 +361,12 @@ void MainWindow::setupStreaming(QCustomPlot *customPlot)
         });
 }
 
-void MainWindow::realtimeDataSlot(QByteArray data)
+void MainWindow::realtimeDataSlot(QList <QByteArray> data)
 {
 
     if(ui->calibration_PB->isChecked()){
 
-        int value0 =data.toInt();
+        int value0 =data[0].toInt();
 
         double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
 
@@ -365,13 +377,10 @@ void MainWindow::realtimeDataSlot(QByteArray data)
         ui->customPlot->graph(1)->addData(key, value0);
         // remove data of lines that's outside visible range:
         ui->customPlot->graph(0)->removeDataBefore(key-15);
-
         // rescale value (vertical) axis to fit the current data:
         ui->customPlot->xAxis->setRange(key+1, 16, Qt::AlignRight);
-        //ui->customPlot->graph(1)->rescaleValueAxis();
 
         ui->customPlot->replot();
-
         putChar(response::READY);
 
     }

@@ -53,7 +53,7 @@ void intensitymap::setupIntensityMap(QCustomPlot *customPlot)
         {
             colorMap->data()->cellToCoord(xIndex, yIndex, &x, &y);
 
-            z = dataSeries->itemAt(xIndex,yIndex)->y();
+            z = dataSeries->itemAt(yIndex,xIndex)->y();
             if (z>max){
                 max=z;
             }
@@ -85,14 +85,24 @@ void intensitymap::setupIntensityMap(QCustomPlot *customPlot)
 
 void intensitymap::on_save_pb_clicked()
 {
-    QString filepath = QFileDialog::getExistingDirectory();
+
+    QString date=QDate::currentDate().toString();
+    QString time=QTime::currentTime().toString();
+
+    QString filepath = QFileDialog::getExistingDirectory(this, "Choose save path", "../../",QFileDialog::ShowDirsOnly);
     QFile file(filepath+"/AFM_Scan_config_"+QDate::currentDate().toString()+"_"+QTime::currentTime().toString());
     if(!filepath.isNull()){
+        QDir dir(filepath+"/"+date+"AFM Scan");
+           if (!dir.exists()) {
+               dir.mkpath(".");
+           }
+     QFile file(dir.path()+"/AFM_Scan_config_"+time);
+
         if ( file.open(QIODevice::ReadWrite) )
         {
             QTextStream stream( &file );
             stream << ui->textBrowser->toPlainText() << endl;
-            ui->intensityMap->saveBmp(filepath+"/AFM_Scan_image"+QDate::currentDate().toString()+"_"+QTime::currentTime().toString());
+            ui->intensityMap->saveBmp(dir.path()+"/AFM_Scan_image_"+time+".bmp");
         }
         else{QMessageBox::critical(this, tr("Error"), "File Can't Be Opened");}
     }
@@ -149,4 +159,9 @@ void intensitymap::on_interpolateRB_toggled(bool checked)
     colorMap->setInterpolate(checked);
     ui->intensityMap->replot();
 
+}
+
+void intensitymap::on_quit_pb_clicked()
+{
+    this->close();
 }
