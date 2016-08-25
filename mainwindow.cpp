@@ -300,7 +300,7 @@ void MainWindow::on_scanPB_clicked()
         ui->scanPB->setChecked(false);
         ui->scanPB->setEnabled(true);
         ui->scanPB->setText("Start Scan");
-        ui->scanPB->setStyleSheet("QPushButton {color:black;}");
+        ui->scanPB->setStyleSheet("QPushButton {color:white;}");
     });
 }
 
@@ -436,4 +436,10 @@ void MainWindow::on_LoadScan_clicked()
 
         }
     }
+}
+
+
+void MainWindow::on_focusSlider_valueChanged(int value)
+{
+
 }

@@ -92,7 +92,7 @@ scannerwindow::scannerwindow(QList<int> parameters, QMainWindow *parent, bool lo
 
 if(!load){
     AFM_Scan_3D_RB = new QPushButton(widget);
-    AFM_Scan_3D_RB->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    AFM_Scan_3D_RB->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
     AFM_Scan_3D_RB->setText(QStringLiteral("Start Scan"));
     AFM_Scan_3D_RB->setCheckable(true);
     AFM_Scan_3D_RB->setChecked(false);
@@ -101,11 +101,11 @@ if(!load){
 
 }
      SaveSurface = new QPushButton(widget);
-     SaveSurface->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+     SaveSurface->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
      SaveSurface->setText(QStringLiteral("Save Data"));
 
     BitmapView = new QPushButton(widget);
-    BitmapView->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    BitmapView->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
     BitmapView->setText(QStringLiteral("Save BMP"));
 
 
@@ -151,14 +151,14 @@ if(!load){
     selectionGroupBox->setLayout(selectionVBox);
 
     QSlider *axisCameraSliderZ = new QSlider(Qt::Horizontal, widget);
-    axisCameraSliderZ->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    axisCameraSliderZ->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
     axisCameraSliderZ->setMinimum(0);
     axisCameraSliderZ->setMaximum(179);
     axisCameraSliderZ->setTickInterval(1);
     axisCameraSliderZ->setEnabled(true);
 
     QSlider *axisCameraSliderY = new QSlider(Qt::Horizontal, widget);
-    axisCameraSliderY->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    axisCameraSliderY->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
     axisCameraSliderY->setMinimum(0);
     axisCameraSliderY->setMaximum(180);
     axisCameraSliderY->setTickInterval(0);
@@ -167,10 +167,11 @@ if(!load){
 
     QComboBox *themeList = new QComboBox(widget);
     themeList->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+
     themeList->addItem(QStringLiteral("Qt"));
     themeList->addItem(QStringLiteral("Primary Colors"));
     themeList->addItem(QStringLiteral("Digia"));
-    themeList->addItem(QStringLiteral("Stone Moss"));
+    themeList->addItem(QStringLiteral("Stone Moss"));    
     themeList->addItem(QStringLiteral("Army Blue"));
     themeList->addItem(QStringLiteral("Retro"));
     themeList->addItem(QStringLiteral("Ebony"));
@@ -225,7 +226,6 @@ if(!load){
     widget->show();
 
     modifier= new SurfaceGraph(graph, widget,parameters);
-
 
 if(!load){
 
@@ -304,7 +304,7 @@ if(!load){
     modeItemRB->setChecked(true);
     BitmapView->setEnabled(false);
 
-    themeList->setCurrentIndex(2);
+    themeList->setCurrentIndex(4);
     if(load){
      modifier->enableAFMModel();
      modifier->fillAFMProxy(mock,load,stream);
@@ -355,6 +355,7 @@ void scannerwindow::AFMButtonHandler(bool checked){
 
 void scannerwindow::initializeBitmapForward(QCustomPlot* customPlot){
 
+
     customPlot->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom);
     customPlot->axisRect()->setupFullAxesBox(true);
 
@@ -362,13 +363,13 @@ void scannerwindow::initializeBitmapForward(QCustomPlot* customPlot){
     colorMapForward = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
     customPlot->addPlottable(colorMapForward);
 
-
     colorScaleForward = new QCPColorScale(customPlot);
     customPlot->plotLayout()->addElement(0, 1, colorScaleForward);
     colorScaleForward->setType(QCPAxis::atRight);
     colorMapForward->setColorScale(colorScaleForward);
     colorScaleForward->axis()->setLabel("Forward Scan");
-    colorMapForward->setGradient(QCPColorGradient::gpPolar);
+
+    colorMapForward->setGradient(QCPColorGradient::gpThermal);
 
     marginGroupForward = new QCPMarginGroup(customPlot);
     customPlot->axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroupForward);
@@ -376,6 +377,15 @@ void scannerwindow::initializeBitmapForward(QCustomPlot* customPlot){
     colorMapForward->setInterpolate(true);
     colorMapForward->data()->setSize(parameters[0],parameters[0]);
 
+    customPlot->setBackground(QBrush(QColor(49,54,59)));
+    customPlot->xAxis->setLabelColor(QColor(53,173,236));
+    customPlot->yAxis->setLabelColor(QColor(53,173,236));
+
+    customPlot->yAxis->setTickLabelColor(QColor(53,173,236));
+    customPlot->xAxis->setTickLabelColor(QColor(53,173,236));
+
+    colorScaleForward->axis()->setLabelColor(QColor(53,173,236));
+    colorScaleForward->axis()->setTickLabelColor(QColor(53,173,236));
 
 
 }
@@ -396,12 +406,22 @@ void scannerwindow::initializeBitmapBackward(QCustomPlot* customPlot){
     colorMapBackward->setColorScale(colorScaleBackward);
     colorScaleBackward->axis()->setLabel("Backward Scan");
 
-    colorMapBackward->setGradient(QCPColorGradient::gpPolar);
+    colorMapBackward->setGradient(QCPColorGradient::gpThermal);
 
     marginGroupBackward = new QCPMarginGroup(customPlot);
     customPlot->axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroupBackward);
     colorScaleBackward->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroupBackward);
     colorMapBackward->data()->setSize(parameters[0],parameters[0]);
+
+    customPlot->setBackground(QBrush(QColor(49,54,59)));
+    customPlot->xAxis->setLabelColor(QColor(53,173,236));
+    customPlot->yAxis->setLabelColor(QColor(53,173,236));
+
+    customPlot->yAxis->setTickLabelColor(QColor(53,173,236));
+    customPlot->xAxis->setTickLabelColor(QColor(53,173,236));
+
+    colorScaleBackward->axis()->setLabelColor(QColor(53,173,236));
+    colorScaleBackward->axis()->setTickLabelColor(QColor(53,173,236));
 
 
 
@@ -425,12 +445,22 @@ void scannerwindow::initializeBitmapCombined(QCustomPlot* customPlot){
     colorScaleCombined->axis()->setLabelPadding(3);
 
 
-    colorMapCombined->setGradient(QCPColorGradient::gpPolar);
+    colorMapCombined->setGradient(QCPColorGradient::gpThermal);
 
     marginGroupCombined = new QCPMarginGroup(customPlot);
     customPlot->axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroupCombined);
     colorScaleCombined->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroupCombined);
     colorMapCombined->data()->setSize(parameters[0],parameters[0]);
+
+    customPlot->setBackground(QBrush(QColor(49,54,59)));
+    customPlot->xAxis->setLabelColor(QColor(53,173,236));
+    customPlot->yAxis->setLabelColor(QColor(53,173,236));
+
+    customPlot->yAxis->setTickLabelColor(QColor(53,173,236));
+    customPlot->xAxis->setTickLabelColor(QColor(53,173,236));
+
+    colorScaleBackward->axis()->setLabelColor(QColor(53,173,236));
+    colorScaleBackward->axis()->setTickLabelColor(QColor(53,173,236));
 
 
 

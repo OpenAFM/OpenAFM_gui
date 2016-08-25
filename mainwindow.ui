@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>880</width>
+    <width>885</width>
     <height>730</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>880</width>
+    <width>885</width>
     <height>730</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>880</width>
+    <width>885</width>
     <height>730</height>
    </size>
   </property>
@@ -26,7 +26,7 @@
    <string notr="true">OpenAFM 0.7</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -369,7 +369,7 @@
           <item row="4" column="1">
            <widget class="QLineEdit" name="lineEdit_Data"/>
           </item>
-          <item row="4" column="2">
+          <item row="4" column="2" colspan="2">
            <widget class="QPushButton" name="pushButton_Send">
             <property name="text">
              <string>Send</string>
@@ -402,13 +402,13 @@
         <attribute name="label">
          <string>Scan</string>
         </attribute>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>20</x>
            <y>20</y>
            <width>851</width>
-           <height>533</height>
+           <height>537</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
@@ -431,7 +431,7 @@
           </item>
           <item>
            <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="2" colspan="2">
+            <item row="0" column="3" colspan="2">
              <layout class="QGridLayout" name="gridLayout">
               <item row="1" column="1">
                <widget class="QLabel" name="label_7">
@@ -495,16 +495,6 @@
               </item>
              </layout>
             </item>
-            <item row="2" column="2">
-             <widget class="QPushButton" name="scanPB">
-              <property name="text">
-               <string>Start Scan</string>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="0">
              <widget class="QPushButton" name="calibration_PB">
               <property name="text">
@@ -518,7 +508,7 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
+            <item row="0" column="2">
              <spacer name="horizontalSpacer_4">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -531,14 +521,38 @@
               </property>
              </spacer>
             </item>
-            <item row="2" column="3">
+            <item row="3" column="3">
+             <widget class="QPushButton" name="scanPB">
+              <property name="text">
+               <string>Start Scan</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Focus</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSlider" name="focusSlider">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="4">
              <widget class="QPushButton" name="LoadScan">
               <property name="text">
                <string>Load Scan</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="2" colspan="2">
+            <item row="1" column="3" colspan="2">
              <widget class="QPushButton" name="setup_pushButton">
               <property name="text">
                <string>Setup</string>
@@ -559,14 +573,6 @@
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
