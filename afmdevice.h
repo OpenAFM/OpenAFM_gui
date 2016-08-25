@@ -2,7 +2,7 @@
 #define AFMDEVICE_H
 
 #include <QtCore/QtGlobal>
-#include <QObject>
+#include <QtCore/QObject>
 #include <QtSerialPort/QtSerialPort>
 #include "tx_rx_protocol.h"
 

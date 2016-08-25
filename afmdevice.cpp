@@ -115,6 +115,19 @@ QByteArray afmdevice::readAllData()
     return data;
 }
 
+QByteArray afmdevice::readLine(int timeOut)
+{
+	QByteArray response;
+
+	// just wait until the phone emits frame received
+	QEventLoop ev;
+	QTimer::singleShot(timeOut, ev.wakeUp);
+	connect(phone, SIGNAL(ValidFrameReceived), ev.wakeUp);
+
+	// run Qt event loop until either the timer elapses, or a valid frame is received
+	ev.exec();
+}
+
 QList<QSerialPortInfo> afmdevice::getSerialPorts()
 {
     return QSerialPortInfo::availablePorts();
