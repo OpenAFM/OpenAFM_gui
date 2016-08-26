@@ -599,7 +599,7 @@
             <item row="2" column="0">
              <widget class="QLabel" name="label_10">
               <property name="text">
-               <string>Laser Position</string>
+               <string>Head Position</string>
               </property>
              </widget>
             </item>

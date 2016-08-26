@@ -58,6 +58,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->calibration_PB->setEnabled(false);
     ui->setup_pushButton->setEnabled(false);
     ui->pushButton_Send->setEnabled(false);
+    ui->focusSlider->setEnabled(false);
+    ui->horizontalSlider->setEnabled(false);
+
     loadParameters();
     qDebug()<<parameters[0];
     setupStreaming(ui->customPlot);
@@ -196,6 +199,8 @@ void MainWindow::openSerialPort()
             ui->calibration_PB->setEnabled(true);
             ui->setup_pushButton->setEnabled(true);
             ui->pushButton_Send->setEnabled(true);
+            ui->focusSlider->setEnabled(true);
+            ui->horizontalSlider->setEnabled(true);
 
         });
 
@@ -468,6 +473,6 @@ void MainWindow::on_focusSlider_valueChanged(int value)
 void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
     QByteArray positionPacket;
-    focusPacket+="VCDAC::SET "+QString::number(2)+" "+QString::number(value/10.0);
-    sendData(focusPacket);
+    positionPacket+="VCDAC::SET "+QString::number(2)+" "+QString::number(value/10.0);
+    sendData(positionPacket);
 }
