@@ -432,14 +432,11 @@ void MainWindow::on_setup_pushButton_clicked()
     QByteArray lineLength=QByteArray::number (ui->line_length_spinBox->value());
     QByteArray sampleSize=QByteArray::number (ui->sample_size_spinBox_2->value());
 
-    sendData(response::SETUP);
-    sendData(stepSize);
-    sendData(response::F_BOUNDARY);
-    sendData(lineLength);
-    sendData(response::F_BOUNDARY);
-    sendData(sampleSize);
-    sendData(response::F_BOUNDARY);
-
+    QByteArray setupCommand=response::SETUP +
+                            stepSize + response::F_BOUNDARY +
+                            lineLength + response::F_BOUNDARY +
+                            sampleSize +response::F_BOUNDARY;
+   sendData(setupCommand);
 
 }
 
