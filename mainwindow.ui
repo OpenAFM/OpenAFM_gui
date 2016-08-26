@@ -426,11 +426,93 @@
             <property name="autoFillBackground">
              <bool>false</bool>
             </property>
-            <zorder></zorder>
            </widget>
           </item>
           <item>
            <layout class="QGridLayout" name="gridLayout_3">
+            <item row="1" column="2">
+             <widget class="QRadioButton" name="replies_PB">
+              <property name="text">
+               <string>Replies</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>168</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="3" colspan="2">
+             <widget class="QPushButton" name="setup_pushButton">
+              <property name="text">
+               <string>Setup</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="4">
+             <widget class="QPushButton" name="LoadScan">
+              <property name="text">
+               <string>Load Scan</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Focus</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSlider" name="focusSlider">
+              <property name="maximum">
+               <number>50</number>
+              </property>
+              <property name="value">
+               <number>25</number>
+              </property>
+              <property name="tracking">
+               <bool>false</bool>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="3">
+             <widget class="QPushButton" name="scanPB">
+              <property name="text">
+               <string>Start Scan</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QPushButton" name="calibration_PB">
+              <property name="text">
+               <string>Calibrate</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="autoExclusive">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="3" colspan="2">
              <layout class="QGridLayout" name="gridLayout">
               <item row="1" column="1">
@@ -495,70 +577,29 @@
               </item>
              </layout>
             </item>
-            <item row="0" column="0">
-             <widget class="QPushButton" name="calibration_PB">
-              <property name="text">
-               <string>Calibrate</string>
+            <item row="2" column="2">
+             <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSlider" name="horizontalSlider">
+              <property name="maximum">
+               <number>50</number>
               </property>
-              <property name="checkable">
-               <bool>true</bool>
+              <property name="value">
+               <number>25</number>
               </property>
-              <property name="autoExclusive">
+              <property name="tracking">
                <bool>false</bool>
               </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <spacer name="horizontalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>168</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="3" column="3">
-             <widget class="QPushButton" name="scanPB">
-              <property name="text">
-               <string>Start Scan</string>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>Focus</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QSlider" name="focusSlider">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
              </widget>
             </item>
-            <item row="3" column="4">
-             <widget class="QPushButton" name="LoadScan">
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_10">
               <property name="text">
-               <string>Load Scan</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="3" colspan="2">
-             <widget class="QPushButton" name="setup_pushButton">
-              <property name="text">
-               <string>Setup</string>
-              </property>
-              <property name="checkable">
-               <bool>false</bool>
+               <string>Laser Position</string>
               </property>
              </widget>
             </item>

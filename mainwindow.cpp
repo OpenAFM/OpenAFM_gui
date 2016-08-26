@@ -94,6 +94,7 @@ void MainWindow::putChar(char data)
 void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
 {
 
+
     if(buffer==response::READY){
         qDebug()<<"RDY";
         previous_response=response::READY;
@@ -110,6 +111,24 @@ void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
         buffer.remove(buffer.size()-1,1);
         QList <QByteArray> splitData=buffer.split(',');
         emit plotDataReceived(splitData);
+    }
+    else if(buffer.indexOf("success")!=-1){
+        QMessageBox::information(this,"Success!","Cool as a cucumber",QMessageBox::StandardButton::Ok);
+    }
+
+    else if(buffer.indexOf("failed")!=-1){
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Something went wrong");
+        msgBox.setText("Oh No! These is an issue with your AFM. Reconnect?");
+        QPushButton *reconnectButton = msgBox.addButton(tr("Reconnect"), QMessageBox::ActionRole);
+        QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
+        msgBox.exec();
+        if (msgBox.clickedButton() == reconnectButton) {
+            closeSerialPort();
+            openSerialPort();
+        } else if (msgBox.clickedButton() == abortButton) {
+            closeSerialPort();
+        }
     }
 }
 
@@ -441,5 +460,14 @@ void MainWindow::on_LoadScan_clicked()
 
 void MainWindow::on_focusSlider_valueChanged(int value)
 {
+   QByteArray focusPacket;
+   focusPacket+="VCDAC::SET "+QString::number(1)+" "+QString::number(value/10.0);
+   sendData(focusPacket);
+}
 
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    QByteArray positionPacket;
+    focusPacket+="VCDAC::SET "+QString::number(2)+" "+QString::number(value/10.0);
+    sendData(focusPacket);
 }
