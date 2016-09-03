@@ -434,7 +434,7 @@ void MainWindow::on_calibration_PB_toggled(bool checked)
         sendData(response::READY);
     }
     else{
-        ui->calibration_PB->setText("Calibrate");
+        ui->calibration_PB->setText("Stream");
         sendData(response::DONE);
     }
 }

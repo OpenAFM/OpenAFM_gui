@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>890</width>
-    <height>730</height>
+    <width>880</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>890</width>
-    <height>730</height>
+    <width>880</width>
+    <height>800</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1000</width>
+    <width>880</width>
     <height>800</height>
    </size>
   </property>
@@ -34,6 +34,12 @@
       <width>881</width>
       <height>741</height>
      </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>300</width>
+      <height>300</height>
+     </size>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
@@ -252,8 +258,8 @@
       <widget class="QToolBox" name="Tabs">
        <property name="minimumSize">
         <size>
-         <width>200</width>
-         <height>200</height>
+         <width>300</width>
+         <height>300</height>
         </size>
        </property>
        <property name="font">
@@ -278,6 +284,12 @@
           <height>625</height>
          </rect>
         </property>
+        <property name="maximumSize">
+         <size>
+          <width>10000</width>
+          <height>10000</height>
+         </size>
+        </property>
         <attribute name="label">
          <string>Debug Console</string>
         </attribute>
@@ -287,7 +299,7 @@
            <x>10</x>
            <y>0</y>
            <width>861</width>
-           <height>561</height>
+           <height>621</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
@@ -467,6 +479,9 @@
                <widget class="QLabel" name="label_9">
                 <property name="text">
                  <string>Focus</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                </widget>
               </item>
