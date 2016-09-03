@@ -375,7 +375,7 @@ void scannerwindow::initializeBitmapForward(QCustomPlot* customPlot){
     customPlot->axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroupForward);
     colorScaleForward->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroupForward);
     colorMapForward->setInterpolate(true);
-    colorMapForward->data()->setSize(parameters[0],parameters[0]);
+    colorMapForward->data()->setSize(parameters[0],parameters[1]);
 
     customPlot->setBackground(QBrush(QColor(49,54,59)));
     customPlot->xAxis->setLabelColor(QColor(53,173,236));
@@ -411,7 +411,7 @@ void scannerwindow::initializeBitmapBackward(QCustomPlot* customPlot){
     marginGroupBackward = new QCPMarginGroup(customPlot);
     customPlot->axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroupBackward);
     colorScaleBackward->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroupBackward);
-    colorMapBackward->data()->setSize(parameters[0],parameters[0]);
+    colorMapBackward->data()->setSize(parameters[0],parameters[1]);
 
     customPlot->setBackground(QBrush(QColor(49,54,59)));
     customPlot->xAxis->setLabelColor(QColor(53,173,236));
@@ -450,7 +450,7 @@ void scannerwindow::initializeBitmapCombined(QCustomPlot* customPlot){
     marginGroupCombined = new QCPMarginGroup(customPlot);
     customPlot->axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroupCombined);
     colorScaleCombined->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroupCombined);
-    colorMapCombined->data()->setSize(parameters[0],parameters[0]);
+    colorMapCombined->data()->setSize(parameters[0],parameters[1]);
 
     customPlot->setBackground(QBrush(QColor(49,54,59)));
     customPlot->xAxis->setLabelColor(QColor(53,173,236));

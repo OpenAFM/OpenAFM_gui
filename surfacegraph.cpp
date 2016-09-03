@@ -78,7 +78,8 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data, bool load, QTextStream 
 
     if(!load){
 
-        float stepX = parameters[1];
+        float stepX = parameters[2];
+
         qDebug()<<data;
         if(!size_set){
             int line_size=data.size()/2;

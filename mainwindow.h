@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QtSerialPort/QtSerialPort>
 #include "qcustomplot.h"
+#include "alignbox.cpp"
 
 namespace Ui {
 class MainWindow;
@@ -20,7 +21,10 @@ public:
     ~MainWindow();
     QByteArray bytesReceived;
     QByteArray previous_response;
-    int lineLength;
+    int xLineLength;
+    int yLineLength;
+    int xOffset;
+    int yOffset;
     int stepSize;
     int sampleSize;
     QList<int> parameters;
@@ -53,6 +57,7 @@ private:
     void fillPortsInfo();
     QSerialPort *serial;
     QSerialPortInfo *info;
+    MyGraphicsWidget* wi;
     void getChipSignature();
     void setupStreaming(QCustomPlot *customPlot);
 
@@ -62,7 +67,7 @@ private slots:
     void closeSerialPort();
     void writeData(const QByteArray &data);
     void displayIncoming(QByteArray data,quint16 no_of_bytes);
-
+    void updateBounds();
     void readData();
     void sendData(QByteArray data);
     void handleError(QSerialPort::SerialPortError error);
@@ -78,6 +83,7 @@ private slots:
     void on_LoadScan_clicked();
     void on_focusSlider_valueChanged(int value);
     void on_horizontalSlider_valueChanged(int value);
+    void on_step_size_spinBox_3_valueChanged(int arg1);
 };
 
 #endif // MAINWINDOW_H

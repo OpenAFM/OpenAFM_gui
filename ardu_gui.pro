@@ -16,7 +16,8 @@ SOURCES += main.cpp\
         surfacegraph.cpp \
         scannerwindow.cpp \
         qcustomplot.cpp \
-        intensitymap.cpp
+        intensitymap.cpp \
+    alignbox.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -25,13 +26,14 @@ HEADERS  += mainwindow.h \
         surfacegraph.h \
         scannerwindow.h \
         qcustomplot.h \
-        intensitymap.h
+        intensitymap.h \
+    alignbox.h
 RESOURCES +=qdarkstyle/style.qrc
 
 FORMS    += mainwindow.ui \
             intensitymap.ui \
 
-
+CONFIG += debug
 QMAKE_LFLAGS  += -Wl,-rpath,@executable_path/../Frameworks \
                  -Wl,-rpath,@executable_path/../PlugIns \
                  -Wl,-rpath,@executable_path/../Resources
