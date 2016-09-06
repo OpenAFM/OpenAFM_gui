@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QGraphicsScene* scene= new QGraphicsScene(0,0,200,200,this);
-    wi=new MyGraphicsWidget();
+    wi=new AlignWidget();
 
     wi->setParent(this);
     scene->addItem(wi);
@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->horizontalSlider->setEnabled(false);
 
     loadParameters();
-    qDebug()<<parameters[0];
+
     setupStreaming(ui->customPlot);
 }
 
@@ -109,7 +109,6 @@ void MainWindow::putChar(char data)
 
 void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
 {
-
 
     if(buffer==response::READY){
         qDebug()<<"RDY";
@@ -200,8 +199,6 @@ void MainWindow::openSerialPort()
         ui->statusBar->showMessage(tr("Connecting to %1")
                                    .arg(ui->serialPortDropdown->currentText()));
 
-
-
         QTimer::singleShot(2000, [=](){
             ui->statusBar->showMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
                                        .arg(ui->serialPortDropdown->currentText())
@@ -282,9 +279,7 @@ void MainWindow::sendData(QByteArray data) {
 }
 
 void MainWindow::sendReady(){
-
     serial->write(response::READY);
-
 }
 
 void MainWindow::sendGo(){
@@ -442,7 +437,6 @@ void MainWindow::on_calibration_PB_toggled(bool checked)
 void MainWindow::on_setup_pushButton_clicked()
 {
     loadParameters();
-    //NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
 
     int DAC_MAX=65000;
     int DAC_ORIGIN=DAC_MAX/2;
@@ -452,12 +446,6 @@ void MainWindow::on_setup_pushButton_clicked()
     int _yOffset=(yOffset*DAC_ORIGIN) /SETUP_MAX +DAC_ORIGIN;
     int _xLength=(xLineLength*DAC_ORIGIN) /SETUP_MAX;
     int _yLength=(yLineLength*DAC_ORIGIN) /SETUP_MAX;
-
-   //QByteArray xlineLength=QByteArray::number (ui->line_length_spinBox->value());
-   //QByteArray ylineLength=QByteArray::number(ui->y_length_spinBox->value());
-   //QByteArray sampleSize=QByteArray::number (ui->sample_size_spinBox_2->value());
-
-
 
     QByteArray setupCommand;
     setupCommand            +=response::SETUP +
@@ -507,6 +495,7 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
     sendData(positionPacket);
 }
 void MainWindow::updateBounds(){
+
     QRectF bounds=wi->geometry();
     ui->x_offset_spinBox->setValue(bounds.bottomLeft().x());
     ui->y_offset_spinBox->setValue(200-bounds.bottomLeft().y());

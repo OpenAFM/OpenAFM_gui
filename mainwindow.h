@@ -1,12 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "alignbox.h"
+
 #include <QtCore/QtGlobal>
 #include <QMainWindow>
 #include <QObject>
 #include <QtSerialPort/QtSerialPort>
 #include "qcustomplot.h"
-#include "alignbox.cpp"
 
 namespace Ui {
 class MainWindow;
@@ -57,7 +58,7 @@ private:
     void fillPortsInfo();
     QSerialPort *serial;
     QSerialPortInfo *info;
-    MyGraphicsWidget* wi;
+    AlignWidget* wi;
     void getChipSignature();
     void setupStreaming(QCustomPlot *customPlot);
 

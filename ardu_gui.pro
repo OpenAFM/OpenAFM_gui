@@ -17,7 +17,7 @@ SOURCES += main.cpp\
         scannerwindow.cpp \
         qcustomplot.cpp \
         intensitymap.cpp \
-    alignbox.cpp
+        alignbox.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -27,13 +27,15 @@ HEADERS  += mainwindow.h \
         scannerwindow.h \
         qcustomplot.h \
         intensitymap.h \
-    alignbox.h
+        alignbox.h
+
 RESOURCES +=qdarkstyle/style.qrc
 
 FORMS    += mainwindow.ui \
             intensitymap.ui \
 
 CONFIG += debug
+
 QMAKE_LFLAGS  += -Wl,-rpath,@executable_path/../Frameworks \
                  -Wl,-rpath,@executable_path/../PlugIns \
                  -Wl,-rpath,@executable_path/../Resources

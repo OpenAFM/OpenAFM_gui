@@ -70,13 +70,10 @@ public slots:
     void coldPlot(int);
     void polarPlot(int);
 
-
-
-
-
 signals:
     void AFMStart();
     void AFMDone();
+
 private:
     double yIndex=0;
     QCustomPlot *bitmapForward;

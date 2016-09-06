@@ -78,13 +78,14 @@ scannerwindow::scannerwindow(QList<int> parameters, QMainWindow *parent, bool lo
 
     hSplitterMain->addWidget(container);
     hSplitterMain->addWidget(vSplitterRight);
+
     hSplitterMain->setStyleSheet("QSplitter::handle {background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0,stop:0 rgba(255, 255, 255, 0),stop:0.407273 rgba(200, 200, 200, 255),stop:0.4825 rgba(101, 104, 113, 235), stop:0.6 rgba(255, 255, 255, 0));}");
     vSplitterRight->setStyleSheet("QSplitter::handle {background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0,stop:0 rgba(255, 255, 255, 0),stop:0.407273 rgba(200, 200, 200, 255),stop:0.4825 rgba(101, 104, 113, 235), stop:0.6 rgba(255, 255, 255, 0));}");
 
     hLayout->addWidget(hSplitterMain);
-
     hLayout->addLayout(vLayout);
     vLayout->setAlignment(Qt::AlignTop);
+
     widget->setWindowTitle(QStringLiteral("AFM Scan"));
     QGroupBox *modelGroupBox = new QGroupBox(QStringLiteral("Scan"));
 
@@ -100,9 +101,9 @@ if(!load){
 
 
 }
-     SaveSurface = new QPushButton(widget);
-     SaveSurface->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
-     SaveSurface->setText(QStringLiteral("Save Data"));
+    SaveSurface = new QPushButton(widget);
+    SaveSurface->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
+    SaveSurface->setText(QStringLiteral("Save Data"));
 
     BitmapView = new QPushButton(widget);
     BitmapView->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
@@ -184,6 +185,7 @@ if(!load){
     grBtoY.setColorAt(0.67, Qt::blue);
     grBtoY.setColorAt(0.33, Qt::red);
     grBtoY.setColorAt(0.0, Qt::yellow);
+
     QPixmap pm(24, 100);
     QPainter pmp(&pm);
     pmp.setBrush(QBrush(grBtoY));
@@ -224,7 +226,6 @@ if(!load){
     vLayout->addWidget(colorGroupBox);
 
     widget->show();
-
     modifier= new SurfaceGraph(graph, widget,parameters);
 
 if(!load){
