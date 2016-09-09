@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += datavisualization core gui serialport
+QT       += datavisualization core gui serialport opengl
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = openAFM

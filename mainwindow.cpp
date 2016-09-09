@@ -3,6 +3,7 @@
 #include "tx_rx_protocol.h"
 #include "def_commands.h"
 #include "scannerwindow.h"
+#include "alignbox.h"
 #include <QMessageBox>
 #include <QDebug>
 #include <QLibraryInfo>

@@ -27,6 +27,7 @@ private:
 
 class AlignWidget : public QGraphicsWidget
 {
+
 public:
     AlignWidget(QGraphicsItem* parent = 0);
 
@@ -36,7 +37,6 @@ public:
     void gridUpdate(QPainter* painter, int gridSize);
     void mouseMoveEvent( QGraphicsSceneMouseEvent *event);
     void setGeometry(const QRectF& rect);
-
 
 private:
 
