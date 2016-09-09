@@ -3,26 +3,37 @@
 #include "tx_rx_protocol.h"
 #include "def_commands.h"
 #include "scannerwindow.h"
+#include "alignbox.h"
 #include <QMessageBox>
 #include <QDebug>
 #include <QLibraryInfo>
 #include <QtSerialPort/QSerialPort>
 #include <QSerialPortInfo>
 
-
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-
-
     ui->setupUi(this);
+
+    QGraphicsScene* scene= new QGraphicsScene(0,0,200,200,this);
+    wi=new AlignWidget();
+
+    wi->setParent(this);
+    scene->addItem(wi);
+
+
+    ui->graphicsView->setScene(scene);
+
     ui->statusBar->showMessage("openAFM Interface", 3000);
     serial = new QSerialPort(this);
     this->fillPortsInfo();
     TX_RX_qt* phone = TX_RX_qt::instance();
     phone->receive_frame_buffer.reserve(10000);
+
+
+    QObject::connect(wi, SIGNAL(geometryChanged()),
+                     this, SLOT(updateBounds()));
 
     QObject::connect(phone, SIGNAL(TX_TransmitByte(QByteArray)),
                      this, SLOT(putChar(QByteArray)));
@@ -62,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->horizontalSlider->setEnabled(false);
 
     loadParameters();
-    qDebug()<<parameters[0];
+
     setupStreaming(ui->customPlot);
 }
 
@@ -73,11 +84,14 @@ MainWindow::~MainWindow()
 }
 void MainWindow::loadParameters(){
 
-    lineLength=ui->line_length_spinBox->value();
+    xLineLength=ui->line_length_spinBox->value();
+    yLineLength=ui->y_length_spinBox->value();
     stepSize=ui->step_size_spinBox_3->value();
     sampleSize=ui->sample_size_spinBox_2->value();
+    xOffset=ui->x_offset_spinBox->value();
+    yOffset=ui->y_offset_spinBox->value();
 
-    parameters={lineLength, stepSize, sampleSize};
+    parameters={xLineLength,yLineLength, stepSize, sampleSize,xOffset,yOffset};
 
 }
 
@@ -97,7 +111,6 @@ void MainWindow::putChar(char data)
 void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
 {
 
-
     if(buffer==response::READY){
         qDebug()<<"RDY";
         previous_response=response::READY;
@@ -110,13 +123,15 @@ void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
         qDebug()<<"response::DONE";
         previous_response=response::DONE;
     }
+
+    else if(buffer.indexOf("success")!=-1){
+        QMessageBox::information(this,"Success!","Cool as a cucumber",QMessageBox::StandardButton::Ok);
+    }
+
     else if(previous_response==response::READY && buffer!=response::READY){
         buffer.remove(buffer.size()-1,1);
         QList <QByteArray> splitData=buffer.split(',');
         emit plotDataReceived(splitData);
-    }
-    else if(buffer.indexOf("success")!=-1){
-        QMessageBox::information(this,"Success!","Cool as a cucumber",QMessageBox::StandardButton::Ok);
     }
 
     else if(buffer.indexOf("failed")!=-1){
@@ -184,8 +199,6 @@ void MainWindow::openSerialPort()
 
         ui->statusBar->showMessage(tr("Connecting to %1")
                                    .arg(ui->serialPortDropdown->currentText()));
-
-
 
         QTimer::singleShot(2000, [=](){
             ui->statusBar->showMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
@@ -267,18 +280,16 @@ void MainWindow::sendData(QByteArray data) {
 }
 
 void MainWindow::sendReady(){
-    qDebug()<<"received sig";
     serial->write(response::READY);
-
 }
 
 void MainWindow::sendGo(){
-    qDebug()<<"received sig";
+
     serial->write(response::GO);
 }
 
 void MainWindow::sendDone(){
-    qDebug()<<"received sig";
+
     serial->write(response::DONE);
 }
 
@@ -419,7 +430,7 @@ void MainWindow::on_calibration_PB_toggled(bool checked)
         sendData(response::READY);
     }
     else{
-        ui->calibration_PB->setText("Calibrate");
+        ui->calibration_PB->setText("Stream");
         sendData(response::DONE);
     }
 }
@@ -428,18 +439,26 @@ void MainWindow::on_setup_pushButton_clicked()
 {
     loadParameters();
 
-    QByteArray stepSize= QByteArray::number(ui->step_size_spinBox_3->value());
-    QByteArray lineLength=QByteArray::number (ui->line_length_spinBox->value());
-    QByteArray sampleSize=QByteArray::number (ui->sample_size_spinBox_2->value());
+    int DAC_MAX=65000;
+    int DAC_ORIGIN=DAC_MAX/2;
+    int SETUP_MAX=200;
 
-    sendData(response::SETUP);
-    sendData(stepSize);
-    sendData(response::F_BOUNDARY);
-    sendData(lineLength);
-    sendData(response::F_BOUNDARY);
-    sendData(sampleSize);
-    sendData(response::F_BOUNDARY);
+    int _xOffset=(xOffset*DAC_ORIGIN) /SETUP_MAX +DAC_ORIGIN;
+    int _yOffset=(yOffset*DAC_ORIGIN) /SETUP_MAX +DAC_ORIGIN;
+    int _xLength=(xLineLength*DAC_ORIGIN) /SETUP_MAX;
+    int _yLength=(yLineLength*DAC_ORIGIN) /SETUP_MAX;
 
+    QByteArray setupCommand;
+    setupCommand            +=response::SETUP +
+                            QByteArray::number(stepSize) + response::F_BOUNDARY +
+                            QByteArray::number(_xLength) + response::F_BOUNDARY +
+                            QByteArray::number(_yLength) + response::F_BOUNDARY +
+                            QByteArray::number(sampleSize) + response::F_BOUNDARY +
+                            QByteArray::number(_xOffset) + response::F_BOUNDARY +
+                            QByteArray::number(_yOffset) + response::F_BOUNDARY;
+
+
+   sendData(setupCommand);
 
 }
 
@@ -475,4 +494,19 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
     QByteArray positionPacket;
     positionPacket+="VCDAC::SET "+QString::number(2)+" "+QString::number(value/10.0);
     sendData(positionPacket);
+}
+void MainWindow::updateBounds(){
+
+    QRectF bounds=wi->geometry();
+    ui->x_offset_spinBox->setValue(bounds.bottomLeft().x());
+    ui->y_offset_spinBox->setValue(200-bounds.bottomLeft().y());
+    ui->line_length_spinBox->setValue(bounds.bottomRight().x() - bounds.bottomLeft().x());
+    ui->y_length_spinBox->setValue(bounds.bottomRight().y() - bounds.topRight().y());
+}
+
+
+
+void MainWindow::on_step_size_spinBox_3_valueChanged(int arg1)
+{
+
 }

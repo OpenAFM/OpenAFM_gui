@@ -11,20 +11,33 @@ intensitymap::intensitymap(QSurfaceDataProxy* Series, QList <int> parameters,QWi
 
     //parameters={lineLength, stepSize, sampleSize};
 
-    ui->textBrowser->append("####AFM SCAN###\n");
+    ui->textBrowser->append("####AFM SCAN SETTINGS###\n");
 
     ui->textBrowser->append("Time: ");
     ui->textBrowser->append(QDateTime::currentDateTime().toString());
     ui->textBrowser->append("\n");
 
-    ui->textBrowser->append("Line Length");
+    ui->textBrowser->append("X Length");
     ui->textBrowser->append(QString::number(parameters[0]));
 
-    ui->textBrowser->append("Step Size");
+
+    ui->textBrowser->append("Y Length");
     ui->textBrowser->append(QString::number(parameters[1]));
 
-    ui->textBrowser->append("Sample Size");
+    ui->textBrowser->append("Step Size");
     ui->textBrowser->append(QString::number(parameters[2]));
+
+    ui->textBrowser->append("Sample Size");
+    ui->textBrowser->append(QString::number(parameters[3]));
+
+
+    ui->textBrowser->append("X Offset");
+    ui->textBrowser->append(QString::number(parameters[4]));
+
+
+    ui->textBrowser->append("Y Offset");
+    ui->textBrowser->append(QString::number(parameters[5]));
+
 
 }
 

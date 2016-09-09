@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += datavisualization core gui serialport
+QT       += datavisualization core gui serialport opengl
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = openAFM
@@ -16,7 +16,8 @@ SOURCES += main.cpp\
         surfacegraph.cpp \
         scannerwindow.cpp \
         qcustomplot.cpp \
-        intensitymap.cpp
+        intensitymap.cpp \
+        alignbox.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -25,12 +26,15 @@ HEADERS  += mainwindow.h \
         surfacegraph.h \
         scannerwindow.h \
         qcustomplot.h \
-        intensitymap.h
+        intensitymap.h \
+        alignbox.h
+
 RESOURCES +=qdarkstyle/style.qrc
 
 FORMS    += mainwindow.ui \
             intensitymap.ui \
 
+CONFIG += debug
 
 QMAKE_LFLAGS  += -Wl,-rpath,@executable_path/../Frameworks \
                  -Wl,-rpath,@executable_path/../PlugIns \
