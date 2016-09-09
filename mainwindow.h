@@ -76,6 +76,8 @@ private slots:
     void on_calibration_PB_toggled(bool checked);
     void on_setup_pushButton_clicked();
     void on_LoadScan_clicked();
+    void on_focusSlider_valueChanged(int value);
+    void on_horizontalSlider_valueChanged(int value);
 };
 
 #endif // MAINWINDOW_H

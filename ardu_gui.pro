@@ -26,7 +26,7 @@ HEADERS  += mainwindow.h \
         scannerwindow.h \
         qcustomplot.h \
         intensitymap.h
-
+RESOURCES +=qdarkstyle/style.qrc
 
 FORMS    += mainwindow.ui \
             intensitymap.ui \

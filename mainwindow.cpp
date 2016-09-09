@@ -58,6 +58,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->calibration_PB->setEnabled(false);
     ui->setup_pushButton->setEnabled(false);
     ui->pushButton_Send->setEnabled(false);
+    ui->focusSlider->setEnabled(false);
+    ui->horizontalSlider->setEnabled(false);
+
     loadParameters();
     qDebug()<<parameters[0];
     setupStreaming(ui->customPlot);
@@ -94,6 +97,7 @@ void MainWindow::putChar(char data)
 void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
 {
 
+
     if(buffer==response::READY){
         qDebug()<<"RDY";
         previous_response=response::READY;
@@ -110,6 +114,24 @@ void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
         buffer.remove(buffer.size()-1,1);
         QList <QByteArray> splitData=buffer.split(',');
         emit plotDataReceived(splitData);
+    }
+    else if(buffer.indexOf("success")!=-1){
+        QMessageBox::information(this,"Success!","Cool as a cucumber",QMessageBox::StandardButton::Ok);
+    }
+
+    else if(buffer.indexOf("failed")!=-1){
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Something went wrong");
+        msgBox.setText("Oh No! These is an issue with your AFM. Reconnect?");
+        QPushButton *reconnectButton = msgBox.addButton(tr("Reconnect"), QMessageBox::ActionRole);
+        QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
+        msgBox.exec();
+        if (msgBox.clickedButton() == reconnectButton) {
+            closeSerialPort();
+            openSerialPort();
+        } else if (msgBox.clickedButton() == abortButton) {
+            closeSerialPort();
+        }
     }
 }
 
@@ -177,6 +199,8 @@ void MainWindow::openSerialPort()
             ui->calibration_PB->setEnabled(true);
             ui->setup_pushButton->setEnabled(true);
             ui->pushButton_Send->setEnabled(true);
+            ui->focusSlider->setEnabled(true);
+            ui->horizontalSlider->setEnabled(true);
 
         });
 
@@ -300,7 +324,7 @@ void MainWindow::on_scanPB_clicked()
         ui->scanPB->setChecked(false);
         ui->scanPB->setEnabled(true);
         ui->scanPB->setText("Start Scan");
-        ui->scanPB->setStyleSheet("QPushButton {color:black;}");
+        ui->scanPB->setStyleSheet("QPushButton {color:white;}");
     });
 }
 
@@ -436,4 +460,19 @@ void MainWindow::on_LoadScan_clicked()
 
         }
     }
+}
+
+
+void MainWindow::on_focusSlider_valueChanged(int value)
+{
+   QByteArray focusPacket;
+   focusPacket+="VCDAC::SET "+QString::number(1)+" "+QString::number(value/10.0);
+   sendData(focusPacket);
+}
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    QByteArray positionPacket;
+    positionPacket+="VCDAC::SET "+QString::number(2)+" "+QString::number(value/10.0);
+    sendData(positionPacket);
 }
