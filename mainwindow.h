@@ -35,6 +35,8 @@ public slots:
     void sendGo();
     void sendDone();
     void sendReady();
+    void sendReadynopiezo();
+
     void putChar(QByteArray data);
     void putChar(char data);
     void phone_CommandRouter(QByteArray buffer, quint16 bytes_received);
@@ -82,9 +84,13 @@ private slots:
     void on_calibration_PB_toggled(bool checked);
     void on_setup_pushButton_clicked();
     void on_LoadScan_clicked();
-    void on_focusSlider_valueChanged(int value);
     void on_horizontalSlider_valueChanged(int value);
     void on_step_size_spinBox_3_valueChanged(int arg1);
+    void on_focusSlider_sliderMoved(int value);
+    void on_focusrangeMin_valueChanged(int arg1);
+    void on_focusRangeMax_valueChanged(int arg1);
+    void on_focus_valueChanged(int arg1);
+    void on_focusSlider_valueChanged(int value);
 };
 
 #endif // MAINWINDOW_H

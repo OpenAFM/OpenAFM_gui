@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>890</width>
+    <width>910</width>
     <height>800</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>890</width>
+    <width>910</width>
     <height>800</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>890</width>
+    <width>910</width>
     <height>800</height>
    </size>
   </property>
@@ -31,7 +31,7 @@
      <rect>
       <x>0</x>
       <y>10</y>
-      <width>881</width>
+      <width>912</width>
       <height>741</height>
      </rect>
     </property>
@@ -258,7 +258,7 @@
       <widget class="QToolBox" name="Tabs">
        <property name="minimumSize">
         <size>
-         <width>300</width>
+         <width>910</width>
          <height>300</height>
         </size>
        </property>
@@ -280,7 +280,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>879</width>
+          <width>910</width>
           <height>625</height>
          </rect>
         </property>
@@ -408,7 +408,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>879</width>
+          <width>910</width>
           <height>625</height>
          </rect>
         </property>
@@ -420,374 +420,400 @@
         <attribute name="label">
          <string>Scan</string>
         </attribute>
-        <widget class="QWidget" name="layoutWidget">
-         <property name="geometry">
-          <rect>
-           <x>11</x>
-           <y>10</y>
-           <width>871</width>
-           <height>301</height>
-          </rect>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="1">
-           <widget class="QPushButton" name="calibration_PB">
-            <property name="text">
-             <string>Stream</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" rowspan="2">
-           <widget class="QCustomPlot" name="customPlot" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>600</width>
-              <height>280</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>600</width>
-              <height>300</height>
-             </size>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="autoFillBackground">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <spacer name="horizontalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="1" colspan="2">
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>Focus</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QSlider" name="focusSlider">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="maximum">
-                 <number>50</number>
-                </property>
-                <property name="value">
-                 <number>25</number>
-                </property>
-                <property name="tracking">
-                 <bool>false</bool>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <widget class="QLabel" name="label_10">
-                <property name="text">
-                 <string>Track</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QSlider" name="horizontalSlider">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="maximum">
-                 <number>50</number>
-                </property>
-                <property name="value">
-                 <number>25</number>
-                </property>
-                <property name="tracking">
-                 <bool>false</bool>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="layoutWidget">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>310</y>
-           <width>611</width>
-           <height>291</height>
-          </rect>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="2" column="1" colspan="2">
-           <widget class="QPushButton" name="setup_pushButton">
-            <property name="text">
-             <string>Setup</string>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" colspan="3">
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="1" column="0" colspan="2">
-             <widget class="QSpinBox" name="line_length_spinBox">
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-              <property name="buttonSymbols">
-               <enum>QAbstractSpinBox::NoButtons</enum>
-              </property>
-              <property name="accelerated">
-               <bool>true</bool>
-              </property>
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <number>200</number>
-              </property>
-              <property name="value">
-               <number>100</number>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="3" colspan="2">
-             <widget class="QSpinBox" name="sample_size_spinBox_2">
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <number>20</number>
-              </property>
-              <property name="value">
-               <number>5</number>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="5">
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>Sample Size</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QLabel" name="xoffsetLabel">
-              <property name="text">
-               <string>X Offset</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="2">
-             <widget class="QLabel" name="xSizeLabel">
-              <property name="text">
-               <string>X Size</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="5">
-             <widget class="QLabel" name="ySizeLabel">
-              <property name="text">
-               <string>Y Size</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="3" colspan="2">
-             <widget class="QSpinBox" name="y_length_spinBox">
-              <property name="wrapping">
-               <bool>true</bool>
-              </property>
-              <property name="buttonSymbols">
-               <enum>QAbstractSpinBox::NoButtons</enum>
-              </property>
-              <property name="maximum">
-               <number>200</number>
-              </property>
-              <property name="value">
-               <number>100</number>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" colspan="2">
-             <widget class="QSpinBox" name="x_offset_spinBox">
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-              <property name="buttonSymbols">
-               <enum>QAbstractSpinBox::NoButtons</enum>
-              </property>
-              <property name="maximum">
-               <number>200</number>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Step</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0" colspan="2">
-             <widget class="QSpinBox" name="step_size_spinBox_3">
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <number>1000</number>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="5">
-             <widget class="QLabel" name="yoffsetLabel">
-              <property name="text">
-               <string>Y Offset</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3" colspan="2">
-             <widget class="QSpinBox" name="y_offset_spinBox">
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-              <property name="buttonSymbols">
-               <enum>QAbstractSpinBox::NoButtons</enum>
-              </property>
-              <property name="maximum">
-               <number>200</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="3">
-           <widget class="QPushButton" name="LoadScan">
-            <property name="text">
-             <string>Load Scan</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" rowspan="3">
-           <widget class="QGraphicsView" name="graphicsView">
-            <property name="minimumSize">
-             <size>
-              <width>202</width>
-              <height>202</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>210</width>
-              <height>210</height>
-             </size>
-            </property>
-            <property name="backgroundBrush">
-             <brush brushstyle="SolidPattern">
-              <color alpha="100">
-               <red>52</red>
-               <green>163</green>
-               <blue>236</blue>
-              </color>
-             </brush>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1" colspan="3">
-           <widget class="QPushButton" name="scanPB">
-            <property name="text">
-             <string>Start Scan</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Drag and Resize Scan Area</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0" rowspan="5">
+          <widget class="QCustomPlot" name="customPlot" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>600</width>
+             <height>280</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>600</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" colspan="2">
+          <widget class="QPushButton" name="calibration_PB">
+           <property name="text">
+            <string>Stream</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QSpinBox" name="focusrangeMin">
+           <property name="maximum">
+            <number>59999</number>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2" colspan="2">
+          <widget class="QSpinBox" name="focus">
+           <property name="maximum">
+            <number>60000</number>
+           </property>
+           <property name="value">
+            <number>30000</number>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="4">
+          <widget class="QSpinBox" name="focusRangeMax">
+           <property name="maximum">
+            <number>60000</number>
+           </property>
+           <property name="value">
+            <number>60000</number>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>212</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="5" column="0">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="2" column="1" colspan="2">
+            <widget class="QPushButton" name="setup_pushButton">
+             <property name="text">
+              <string>Setup</string>
+             </property>
+             <property name="checkable">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" colspan="3">
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="1" column="0" colspan="2">
+              <widget class="QSpinBox" name="line_length_spinBox">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+               <property name="buttonSymbols">
+                <enum>QAbstractSpinBox::NoButtons</enum>
+               </property>
+               <property name="accelerated">
+                <bool>true</bool>
+               </property>
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>200</number>
+               </property>
+               <property name="value">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3" colspan="2">
+              <widget class="QSpinBox" name="sample_size_spinBox_2">
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>20</number>
+               </property>
+               <property name="value">
+                <number>5</number>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="5">
+              <widget class="QLabel" name="label_7">
+               <property name="text">
+                <string>Sample Size</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="xoffsetLabel">
+               <property name="text">
+                <string>X Offset</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="xSizeLabel">
+               <property name="text">
+                <string>X Size</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="5">
+              <widget class="QLabel" name="ySizeLabel">
+               <property name="text">
+                <string>Y Size</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3" colspan="2">
+              <widget class="QSpinBox" name="y_length_spinBox">
+               <property name="wrapping">
+                <bool>true</bool>
+               </property>
+               <property name="buttonSymbols">
+                <enum>QAbstractSpinBox::NoButtons</enum>
+               </property>
+               <property name="maximum">
+                <number>200</number>
+               </property>
+               <property name="value">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="2">
+              <widget class="QSpinBox" name="x_offset_spinBox">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+               <property name="buttonSymbols">
+                <enum>QAbstractSpinBox::NoButtons</enum>
+               </property>
+               <property name="maximum">
+                <number>200</number>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="label_8">
+               <property name="text">
+                <string>Step</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="2">
+              <widget class="QSpinBox" name="step_size_spinBox_3">
+               <property name="accelerated">
+                <bool>true</bool>
+               </property>
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>10000</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="5">
+              <widget class="QLabel" name="yoffsetLabel">
+               <property name="text">
+                <string>Y Offset</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3" colspan="2">
+              <widget class="QSpinBox" name="y_offset_spinBox">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+               <property name="buttonSymbols">
+                <enum>QAbstractSpinBox::NoButtons</enum>
+               </property>
+               <property name="maximum">
+                <number>200</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="3">
+            <widget class="QPushButton" name="LoadScan">
+             <property name="text">
+              <string>Load Scan</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" rowspan="3">
+            <widget class="QGraphicsView" name="graphicsView">
+             <property name="minimumSize">
+              <size>
+               <width>202</width>
+               <height>202</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>210</width>
+               <height>210</height>
+              </size>
+             </property>
+             <property name="backgroundBrush">
+              <brush brushstyle="SolidPattern">
+               <color alpha="100">
+                <red>52</red>
+                <green>163</green>
+                <blue>236</blue>
+               </color>
+              </brush>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" colspan="3">
+            <widget class="QPushButton" name="scanPB">
+             <property name="text">
+              <string>Start Scan</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_6">
+             <property name="maximumSize">
+              <size>
+               <width>200</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Drag and Resize Scan Area</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="3" colspan="2">
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>135</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="1" colspan="4">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>Focus</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSlider" name="focusSlider">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="mouseTracking">
+              <bool>true</bool>
+             </property>
+             <property name="toolTip">
+              <string>Set the focus position of DVD head</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>10000</number>
+             </property>
+             <property name="whatsThis">
+              <string extracomment="Set the focus position of DVD head"/>
+             </property>
+             <property name="maximum">
+              <number>60000</number>
+             </property>
+             <property name="value">
+              <number>30000</number>
+             </property>
+             <property name="tracking">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="3" column="1" colspan="4">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>Track</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSlider" name="horizontalSlider">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Set the tracking position of DVD head</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>10000</number>
+             </property>
+             <property name="maximum">
+              <number>50</number>
+             </property>
+             <property name="value">
+              <number>25</number>
+             </property>
+             <property name="tracking">
+              <bool>false</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
       </widget>
      </item>

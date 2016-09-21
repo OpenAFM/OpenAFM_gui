@@ -81,6 +81,7 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data, bool load, QTextStream 
         float stepX = parameters[2];
 
         qDebug()<<data.size();
+        qDebug()<<data;
         if(!size_set){
             int line_size=data.size()/2;
             sampleCountX=line_size;
@@ -91,7 +92,7 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data, bool load, QTextStream 
             QSurfaceDataRow *newRow = new QSurfaceDataRow(sampleCountX);
             int index = 0;
             for (int j = 0; j<sampleCountX; j++) {
-                float x = (j * stepX);
+                float x = j;
                 float y = (data.front().toInt() + data.back().toInt())/2;
                 data.pop_back();
                 data.pop_front();
@@ -103,10 +104,15 @@ void SurfaceGraph::fillAFMProxy(QList <QByteArray> data, bool load, QTextStream 
 
             }
             m_graph->axisZ()->setRange(0,AFM_Proxy->rowCount()+2);
+            qDebug()<<QTime::currentTime();
 
             AFM_Proxy->insertRow(AFM_Proxy->rowCount(),newRow);
-            qDebug()<<QTime::currentTime();
+            if(piezomove){
             emit sendReady();
+            }
+            else{
+            emit sendReadynopiezo();
+            }
         }
         else emit scanFinished();
     }

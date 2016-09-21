@@ -115,6 +115,10 @@ void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
         qDebug()<<"RDY";
         previous_response=response::READY;
     }
+    else if(buffer==response::NOPIEZO){
+        qDebug()<<"RDYS";
+        previous_response=response::READY;
+    }
     else if(buffer==response::GO){
         qDebug()<<"response::GO";
         previous_response=response::GO;
@@ -148,6 +152,7 @@ void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
             closeSerialPort();
         }
     }
+
 }
 
 
@@ -281,6 +286,9 @@ void MainWindow::sendData(QByteArray data) {
 
 void MainWindow::sendReady(){
     serial->write(response::READY);
+}
+void MainWindow::sendReadynopiezo(){
+    serial->write(response::NOPIEZO);
 }
 
 void MainWindow::sendGo(){
@@ -416,7 +424,7 @@ void MainWindow::realtimeDataSlot(QList <QByteArray> data)
         ui->customPlot->xAxis->setRange(key+1, 16, Qt::AlignRight);
 
         ui->customPlot->replot();
-        putChar(response::READY);
+        putChar(response::FES);
 
     }
 
@@ -482,17 +490,11 @@ void MainWindow::on_LoadScan_clicked()
 }
 
 
-void MainWindow::on_focusSlider_valueChanged(int value)
-{
-   QByteArray focusPacket;
-   focusPacket+="VCDAC::SET "+QString::number(1)+" "+QString::number(value/10.0);
-   sendData(focusPacket);
-}
 
 void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
     QByteArray positionPacket;
-    positionPacket+="VCDAC::SET "+QString::number(2)+" "+QString::number(value/10.0);
+    positionPacket+="VCDAC::SET "+QString::number(8)+" "+QString::number(value/10.0);
     sendData(positionPacket);
 }
 void MainWindow::updateBounds(){
@@ -509,4 +511,35 @@ void MainWindow::updateBounds(){
 void MainWindow::on_step_size_spinBox_3_valueChanged(int arg1)
 {
 
+}
+
+void MainWindow::on_focusSlider_sliderMoved(int value)
+{
+
+}
+
+void MainWindow::on_focusrangeMin_valueChanged(int arg1)
+{
+    ui->focus->setMinimum(arg1);
+    ui->focusSlider->setMinimum(arg1);
+
+}
+
+void MainWindow::on_focusRangeMax_valueChanged(int arg1)
+{
+    ui->focus->setMaximum(arg1);
+    ui->focusSlider->setMaximum(arg1);
+}
+
+void MainWindow::on_focus_valueChanged(int arg1)
+{
+    ui->focusSlider->setValue(arg1);
+}
+
+void MainWindow::on_focusSlider_valueChanged(int value)
+{
+    ui->focus->setValue(value);
+    QByteArray focusPacket;
+    focusPacket+="VCDAC::SET "+QString::number(1)+" "+QString::number(value)+response::F_BOUNDARY;
+    sendData(focusPacket);
 }

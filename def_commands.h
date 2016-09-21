@@ -6,12 +6,14 @@
 namespace response{
 
 const QByteArray GO = "GO;";
+const QByteArray NOPIEZO = "PST;";
+
 const QByteArray READY = "RDY;";
 const QByteArray DONE = "DONE;";
 const QByteArray SETUP = "SETUP;";
 const QByteArray STREAM = "STREAM;";
 const QByteArray F_BOUNDARY = ";";
-
+const QByteArray FES = "SIG::FESH?;";
 
 
 }

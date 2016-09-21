@@ -109,13 +109,13 @@ if(!load){
     BitmapView->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
     BitmapView->setText(QStringLiteral("Save BMP"));
 
-
     QVBoxLayout *modelVBox = new QVBoxLayout;
 
    if(!load){
        modelVBox->addWidget(AFM_Scan_3D_RB);
-   }
 
+
+   }
     modelVBox->addWidget(BitmapView);
     modelVBox->addWidget(SaveSurface);
     modelGroupBox->setLayout(modelVBox);
@@ -123,6 +123,11 @@ if(!load){
     QGroupBox *selectionGroupBox = new QGroupBox(QStringLiteral("Selection Mode"));
     selectionGroupBox->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 
+    QCheckBox *piezoMove = new QCheckBox(widget);
+    piezoMove->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    piezoMove->setText(QStringLiteral("Piezo"));
+    piezoMove->setChecked(true);
+    modelVBox->addWidget(piezoMove);
 
     QRadioButton *modeNoneRB = new QRadioButton(widget);
     modeNoneRB->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
@@ -272,6 +277,10 @@ if(!load){
     QObject::connect(modeSliceColumnRB,  &QRadioButton::toggled,
                      modifier, &SurfaceGraph::toggleModeSliceColumn);
 
+    QObject::connect(piezoMove, &QCheckBox::toggled,
+                     modifier, &SurfaceGraph::togglePiezo);
+
+
 
     QObject::connect(themeList, SIGNAL(currentIndexChanged(int)),
                      modifier, SLOT(changeTheme(int)));
@@ -291,7 +300,8 @@ if(!load){
 
     QObject::connect(modifier, SIGNAL (sendReady()),
                      parent, SLOT (sendReady()));
-
+    QObject::connect(modifier, SIGNAL (sendReadynopiezo()),
+                     parent, SLOT (sendReadynopiezo()));
 
     QObject::connect(bitmapForward, SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(ShowForwardContextMenu(const QPoint &)));

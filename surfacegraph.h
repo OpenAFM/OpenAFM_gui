@@ -23,7 +23,9 @@ public:
 
 
     bool size_set=false;
+    bool piezomove=true;
 
+    void togglePiezo() {piezomove = !piezomove;}
     void toggleModeNone() { m_graph->setSelectionMode(QAbstract3DGraph::SelectionNone); }
     void toggleModeItem() { m_graph->setSelectionMode(QAbstract3DGraph::SelectionItem); }
     void toggleModeSliceRow() { m_graph->setSelectionMode(QAbstract3DGraph::SelectionItemAndRow
@@ -45,7 +47,6 @@ public:
     void adjustZMin(int min);
     void adjustZMax(int max);
     void setAxisScaling(int size);
-
     int sampleCountX = 50;
     int sampleCountZ = 50;
     float sampleMin = -8.0f;
@@ -56,6 +57,8 @@ public:
 signals:
     void fillBitmap(QList <QByteArray>);
     void sendReady();
+    void sendReadynopiezo();
+
 
 
 public Q_SLOTS:
