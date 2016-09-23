@@ -56,7 +56,7 @@ void intensitymap::setupIntensityMap(QCustomPlot *customPlot)
     int nx = dataSeries->rowCount();
     int ny = dataSeries->columnCount();
     colorMap->data()->setSize(nx, ny);
-    colorMap->data()->setRange(QCPRange(0, dataSeries->rowCount()), QCPRange(0, dataSeries->columnCount())); // and span the coordinate range -4..4 in both key (x) and value (y) dimensions
+    colorMap->data()->setRange(QCPRange(0, dataSeries->rowCount()), QCPRange(0, dataSeries->columnCount()));
     int max=0;
     double x, y, z;
 

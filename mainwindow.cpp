@@ -128,8 +128,14 @@ void MainWindow::phone_CommandRouter(QByteArray buffer, quint16 bytes_received)
         previous_response=response::DONE;
     }
 
+
     else if(buffer.indexOf("success")!=-1){
         QMessageBox::information(this,"Success!","Cool as a cucumber",QMessageBox::StandardButton::Ok);
+    }
+
+    else if(buffer==response::FES){
+        qDebug()<<"response::FES";
+        previous_response=response::READY;
     }
 
     else if(previous_response==response::READY && buffer!=response::READY){
@@ -408,9 +414,8 @@ void MainWindow::realtimeDataSlot(QList <QByteArray> data)
 {
 
     if(ui->calibration_PB->isChecked()){
-
         int value0 =data[0].toInt();
-
+        if (value0>100){
         double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
 
         // add data to line:
@@ -422,8 +427,8 @@ void MainWindow::realtimeDataSlot(QList <QByteArray> data)
         ui->customPlot->graph(0)->removeDataBefore(key-15);
         // rescale value (vertical) axis to fit the current data:
         ui->customPlot->xAxis->setRange(key+1, 16, Qt::AlignRight);
-
-        ui->customPlot->replot();
+        ui->customPlot->rescaleAxes();
+        ui->customPlot->replot();}
         putChar(response::FES);
 
     }
@@ -434,12 +439,10 @@ void MainWindow::on_calibration_PB_toggled(bool checked)
 {
     if(checked){
         ui->calibration_PB->setText("End");
-        sendData(response::STREAM);
-        sendData(response::READY);
+        sendData(response::FES);
     }
     else{
         ui->calibration_PB->setText("Stream");
-        sendData(response::DONE);
     }
 }
 
@@ -540,6 +543,6 @@ void MainWindow::on_focusSlider_valueChanged(int value)
 {
     ui->focus->setValue(value);
     QByteArray focusPacket;
-    focusPacket+="VCDAC::SET "+QString::number(1)+" "+QString::number(value)+response::F_BOUNDARY;
+    focusPacket+="VCDAC::SET "+QString::number(8)+" "+QString::number(value)+response::F_BOUNDARY;
     sendData(focusPacket);
 }

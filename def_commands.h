@@ -14,7 +14,7 @@ const QByteArray SETUP = "SETUP;";
 const QByteArray STREAM = "STREAM;";
 const QByteArray F_BOUNDARY = ";";
 const QByteArray FES = "SIG::FESH?;";
-
+const QByteArray V="V";
 
 }
 
