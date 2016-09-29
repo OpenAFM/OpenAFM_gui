@@ -489,7 +489,7 @@ void scannerwindow::realtimeDataSlotUpdate(QList <QByteArray> data){
 void scannerwindow::realtimeDataSlotForward(QList <QByteArray> data)
 {
     double z;
-    for (int xIndex=0; xIndex<data.size()/2; ++xIndex)
+    for (int xIndex=0; xIndex < data.size()/2; ++xIndex)
     {
         z = data[xIndex].toDouble();
 
@@ -505,9 +505,9 @@ void scannerwindow::realtimeDataSlotForward(QList <QByteArray> data)
 void scannerwindow::realtimeDataSlotBackward(QList <QByteArray> data)
 {
     double z;
-    for (int xIndex=0; xIndex<data.size()/2; ++xIndex)
+    for (int xIndex=0; xIndex < data.size()/2; ++xIndex)
     {
-        z = data[xIndex+data.size()/2].toDouble();
+        z = data[(data.size()-1)-xIndex].toDouble();
 
         colorMapBackward->data()->setCell(xIndex, yIndex, z);
     }

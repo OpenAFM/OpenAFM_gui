@@ -64,7 +64,7 @@ void intensitymap::setupIntensityMap(QCustomPlot *customPlot)
     {
         for (int yIndex=0; yIndex<ny; ++yIndex)
         {
-            colorMap->data()->cellToCoord(xIndex, yIndex, &x, &y);
+            //colorMap->data()->cellToCoord(xIndex, yIndex, &x, &y);
 
             z = dataSeries->itemAt(yIndex,xIndex)->y();
             if (z>max){
